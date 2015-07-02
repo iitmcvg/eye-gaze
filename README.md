@@ -1,7 +1,7 @@
 # eye-gaze
 ## Repo for Eye Gaze Detection and Tracking
 
-We have implemented an Eye Gaze tracking system using a series of algorithms. It computes the following :
+We have implemented an Eye Gaze tracking system ( currently in Beta version ) using a series of algorithms. It computes the following :
 
 * Pupil detection
 
