@@ -1,0 +1,6 @@
+g++ -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 -I./dlib/all/source.cpp -lpthread -lX11 oic.cpp faceDetection.cpp kalmanFilters.cpp util.cpp pupilDetection.cpp -o oic -ljpeg -mavx `pkg-config --cflags --libs opencv`
+cc1plus: warning: ./dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./dlib/all/source.cpp: not a directory [enabled by default]
+make: *** [all] Interrupt
