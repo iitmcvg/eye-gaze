@@ -15,6 +15,7 @@
 #include "pupilDetection.h"
 #include "kalmanFilters.h"
 #include "util.h"
+#include "viewUtils.h"
 
 using namespace dlib;
 using namespace std;
@@ -84,22 +85,25 @@ int main(int argc, char** argv) {
 
 		cv::Rect rect1, rect2;
 
-		cv::Mat frame, temp, temp2, roi1,roi2;
+		cv::Mat frame, frame_clr, temp, temp2, roi1,roi2;
 		int k_pt_e_l = 0, k_pt_p_l = 0, k_vec_ce_l = 0, k_vec_cp_l = 0, k_vec_ep_l = 0;
 		int k_pt_e_r = 0, k_pt_p_r = 0, k_vec_ce_r = 0, k_vec_cp_r = 0, k_vec_ep_r = 0;
 
 		while(!win.is_closed()) {
 			cap>>frame;
 			cv::flip(frame, frame, 1);
+			frame.copyTo(frame_clr);
 			cv::cvtColor(frame, frame, CV_BGR2GRAY);
 
-			cv_image<unsigned char> cimg(frame);
+			cv_image<unsigned char> cimg_gray(frame);
+			cv_image<bgr_pixel> cimg_clr(frame_clr);
 
-			std::vector<rectangle> faces = detector(cimg);
+
+			std::vector<rectangle> faces = detector(cimg_gray);
 
 			std::vector<full_object_detection> shapes;
 			for (unsigned long i = 0; i < faces.size(); ++i)
-				shapes.push_back(pose_model(cimg, faces[i]));
+				shapes.push_back(pose_model(cimg_gray, faces[i]));
 
 			if(shapes.size() == 0) {
 				std::cout<<"zero faces"<<std::endl;
@@ -175,8 +179,8 @@ int main(int argc, char** argv) {
 
 
 				//cv::Rect rect2(cv::Point(shape.part(22).x(), shape.part(22).y()), cv::Point(shape.part(26).x(), rect1.y + rect1.height));
-				cv::rectangle(frame, rect1, cv::Scalar(255, 255, 255), 1, 8, 0);
-				cv::rectangle(frame, rect2, cv::Scalar(255, 255, 255), 1, 8, 0);
+				cv::rectangle(frame_clr, rect1, cv::Scalar(255, 255, 255), 1, 8, 0);
+				cv::rectangle(frame_clr, rect2, cv::Scalar(255, 255, 255), 1, 8, 0);
 				
 				roi1 = frame(rect1);
 				roi2 = frame(rect2);
@@ -187,8 +191,8 @@ int main(int argc, char** argv) {
 				
 
 				//cv::Point(cv::Point((shape.part(23).x() + rect1.x + rect1.width)*0.5, shape.part(23).y()*(1.0-Wf) + Wf*(rect1.y + rect1.height)));
-				cv::circle(frame, pt_e_pos_l, 1, cv::Scalar(255,0,0), 1, 4, 0);
-				cv::circle(frame, pt_e_pos_r, 1, cv::Scalar(255,0,0), 1, 4, 0);
+				cv::circle(frame_clr, pt_e_pos_l, 1, cv::Scalar(255,0,0), 1, 4, 0);
+				cv::circle(frame_clr, pt_e_pos_r, 1, cv::Scalar(255,0,0), 1, 4, 0);
 
 				//retrace_eye_center(pt_e_pos, face_pose->normal, Cf_left);
 				//cv::circle(frame, pt_e_pos, 1, cv::Scalar(127,0,0), 1, 4, 0);
@@ -407,13 +411,13 @@ int main(int argc, char** argv) {
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_r, rect2, frame);
 */				
 
-				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame);				
-				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame);
+				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
+				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
 
-				draw_facial_normal(frame, shape, vec_ce_kalman_l);
+				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
 			}
 			win.clear_overlay();
-			win.set_image(cimg);
+			win.set_image(cimg_clr);
 			//win.add_overlay(render_face_detections(shapes));
 		}
 	}
