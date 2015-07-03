@@ -11,24 +11,23 @@
 #include "dlib/image_processing/render_face_detections.h"
 #include "dlib/gui_widgets.h"
 
-#include "constants.h"
-
-
-using namespace cv;
+using namespace std;
 using namespace dlib;
+
 double vmax = 1.0 ;
+double _PI = 3.141592653589;
 
 image_window vel;
 void display_velocity(double vx, double vy, double vz ) {
 
-	cv::Mat speedometer = cv::imread("..res/blank_speedometer1.png", 1);
+	cv::Mat speedometer = cv::imread("../res/blank_speedometer1.png", 1);
 	
 	double vel_abs = sqrt(vx*vx + vy*vy + vz*vz);
 	double slope_angle = (-vel_abs*300.0)/vmax + 45.0;
 	cv::Point center = cv::Point(speedometer.rows/2.0, speedometer.cols/2.0);
 
-	double del_x = 100*cos(slope_angle*PI/180.0);
-	double del_y = 100*sin(slope_angle*PI/180.0);
+	double del_x = 100*cos(slope_angle*_PI/180.0);
+	double del_y = 100*sin(slope_angle*_PI/180.0);
 
 	cv::Point end_point = cv:: Point(speedometer.rows/2.0 + del_x , speedometer.cols/2.0 + del_y);
 
