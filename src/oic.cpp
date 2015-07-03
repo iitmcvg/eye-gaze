@@ -350,9 +350,9 @@ int main(int argc, char** argv) {
 				vec_cp_pos_l[1] = (13.101*Cf_left*vec_ce_pos_l[1]) + vec_ep_pos_l[1];
 				vec_cp_pos_l[2] = (13.101*Cf_left*vec_ce_pos_l[2]) + vec_ep_pos_l[2];
 	
-				vec_cp_pos_r[0] = (13.101*Cf_right*vec_ce_pos_r[0]) + 3.0*vec_ep_pos_r[0];
-				vec_cp_pos_r[1] = (13.101*Cf_right*vec_ce_pos_r[1]) + 3.0*vec_ep_pos_r[1];
-				vec_cp_pos_r[2] = (13.101*Cf_right*vec_ce_pos_r[2]) + 3.0*vec_ep_pos_r[2];
+				vec_cp_pos_r[0] = (13.101*Cf_right*vec_ce_pos_r[0]) + vec_ep_pos_r[0];
+				vec_cp_pos_r[1] = (13.101*Cf_right*vec_ce_pos_r[1]) + vec_ep_pos_r[1];
+				vec_cp_pos_r[2] = (13.101*Cf_right*vec_ce_pos_r[2]) + vec_ep_pos_r[2];
 	
 
 				vec_cp_vel_l[0] = vec_cp_pos_l[0] - vec_cp_pos_l_old[0];
@@ -390,9 +390,13 @@ int main(int argc, char** argv) {
 				std::cout<<"Vector CP "<<vec_cp_kalman_r[0]<<" "<<vec_cp_kalman_r[1]<<" "<<vec_cp_kalman_r[2]<<endl;
 
 /*
-				vec_cp_kalman[0] = vec_ce_kalman[0] + vec_ep_kalman[0];
-				vec_cp_kalman[1] = vec_ce_kalman[1] + vec_ep_kalman[1];
-				vec_cp_kalman[2] = vec_ce_kalman[2] + vec_ep_kalman[2];
+				vec_cp_kalman_l[0] = vec_ce_kalman_l[0] + vec_ep_kalman_l[0];
+				vec_cp_kalman_l[1] = vec_ce_kalman_l[1] + vec_ep_kalman_l[1];
+				vec_cp_kalman_l[2] = vec_ce_kalman_l[2] + vec_ep_kalman_l[2];
+
+				vec_cp_kalman_r[0] = vec_ce_kalman_r[0] + vec_ep_kalman_r[0];
+				vec_cp_kalman_r[1] = vec_ce_kalman_r[1] + vec_ep_kalman_r[1];
+				vec_cp_kalman_r[2] = vec_ce_kalman_r[2] + vec_ep_kalman_r[2];
 */
 				make_unit_vector(vec_cp_kalman_l, vec_cp_kalman_l);
 				make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
@@ -415,6 +419,7 @@ int main(int argc, char** argv) {
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
+				display_velocity()
 			}
 			win.clear_overlay();
 			win.set_image(cimg_clr);

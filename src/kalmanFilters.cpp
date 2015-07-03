@@ -14,6 +14,8 @@
 using namespace std;
 using namespace dlib;
 
+cv::RNG rng = cv::RNG(-1);
+
 cv::KalmanFilter KF_p_l (6,6,0);
 cv::Mat_<float> measurement_p_l (6,1);
 
@@ -29,8 +31,9 @@ void init_kalman_point_p_l(cv::Point pt_pos_l) {
 	KF_p_l.processNoiseCov = *(cv::Mat_<float>(4,4) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
 		0,0,0,0.3);*/
 	KF_p_l.transitionMatrix = *(cv::Mat_<float>(6,6) << 1,0,1,0,0.5,0,    0,1,0,1,0,0.5,     0,0,1,0,1,0,   0,0,0,1,0,1,  0,0,0,0,1,0,  0,0,0,0,0,1);
-	KF_p_l.processNoiseCov = *(cv::Mat_<float>(6,6) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
-		0,0,0,0.3, 0.2,0,0.2,0,  0,0.2,0,0.2);
+	rng.fill(KF_p_l.processNoiseCov, cv::RNG::NORMAL, cv::Scalar(0), cv::Scalar(1));
+	/*KF_p_l.processNoiseCov = *(cv::Mat_<float>(6,6) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
+		0,0,0,0.3, 0.2,0,0.2,0,  0,0.2,0,0.2);*/
 
 	cv::setIdentity(KF_p_l.measurementMatrix);
 	cv::setIdentity(KF_p_l.processNoiseCov,cv::Scalar::all(1e-4));
@@ -68,8 +71,9 @@ void init_kalman_point_p_r(cv::Point pt_pos_r) {
 	KF_p_r.processNoiseCov = *(cv::Mat_<float>(4,4) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
 		0,0,0,0.3);*/
 	KF_p_r.transitionMatrix = *(cv::Mat_<float>(6,6) << 1,0,1,0,0.5,0,    0,1,0,1,0,0.5,     0,0,1,0,1,0,   0,0,0,1,0,1,  0,0,0,0,1,0,  0,0,0,0,0,1);
-	KF_p_r.processNoiseCov = *(cv::Mat_<float>(6,6) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
-		0,0,0,0.3, 0.2,0,0.2,0,  0,0.2,0,0.2);
+	rng.fill(KF_p_r.processNoiseCov, cv::RNG::NORMAL, cv::Scalar(0), cv::Scalar(1));
+	/*KF_p_r.processNoiseCov = *(cv::Mat_<float>(6,6) << 0.2,0,0.2,0,  0,0.2,0,0.2,  0,0,0.3,0,   
+		0,0,0,0.3, 0.2,0,0.2,0,  0,0.2,0,0.2);*/
 
 	cv::setIdentity(KF_p_r.measurementMatrix);
 	cv::setIdentity(KF_p_r.processNoiseCov,cv::Scalar::all(1e-4));
