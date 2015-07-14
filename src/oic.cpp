@@ -54,7 +54,6 @@ int main(int argc, char** argv) {
 		std::vector<double> vec_cp_kalman_avg(3);
 
 		std::vector<std::vector<double> > vec_kmeans_data_l, vec_kmeans_centers_l;
-		std::vector<int> vec_kmeans_labels_l;
 
 		double Cf_left, Cf_right;
 
@@ -195,10 +194,19 @@ int main(int argc, char** argv) {
 				cv_image<bgr_pixel> cimg_kmeans_clr_l(roi1_clr);
 				kmeans_array_generate(roi1_clr, vec_kmeans_data_l, 0);
 				cout<<vec_kmeans_data_l.size()<<std::endl;
-				cv::kmeans(vec_kmeans_data_l, 3, vec_kmeans_labels_l, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
+
+				std::vector<int> vec_kmeans_labels_l(vec_kmeans_data_l.size());
+
+				roi1_clr.convertTo(roi1_clr, CV_32F, 1/255.0);
+				std::vector<cv::Mat> hsv;
+				cv::split(roi1_clr, hsv);
+
+				
+
+				cv::kmeans(hsv[0], 3, vec_kmeans_labels_l, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
 					3, cv::KMEANS_PP_CENTERS);//, vec_kmeans_centers_l);
 
-				//kmeans_clusters_view(roi1_clr, vec_kmeans_labels_l);
+				kmeans_clusters_view(roi1_clr, vec_kmeans_labels_l);
 
 				//TODO : Compute current values and correct values using Kalman filter
 
