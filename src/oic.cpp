@@ -201,12 +201,18 @@ int main(int argc, char** argv) {
 				std::vector<cv::Mat> hsv;
 				cv::split(roi1_clr, hsv);
 
-				
+				cv::Mat h_clone;
+				hsv[0].copyTo(h_clone);
+				h_clone = h_clone.reshape(0, hsv[0].rows*hsv[0].cols);
 
-				cv::kmeans(hsv[0], 3, vec_kmeans_labels_l, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
+				std::cout<<"h_clone"<<h_clone.size()<<endl;
+
+				cv::Mat kmeans_labels;
+
+				cv::kmeans(h_clone, 3, kmeans_labels, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
 					3, cv::KMEANS_PP_CENTERS);//, vec_kmeans_centers_l);
 
-				kmeans_clusters_view(roi1_clr, vec_kmeans_labels_l);
+				kmeans_clusters_view(roi1_clr, kmeans_labels);
 
 				//TODO : Compute current values and correct values using Kalman filter
 
@@ -443,10 +449,13 @@ int main(int argc, char** argv) {
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
+				win_kmeans.clear_overlay();
+				win_kmeans.set_image(cimg_kmeans_clr_l);
 			}
 			win.clear_overlay();
 			win.set_image(cimg_clr);
 			//win.add_overlay(render_face_detections(shapes));
+
 		}
 	}
 	catch(serialization_error& e) {
