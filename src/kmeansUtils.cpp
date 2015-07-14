@@ -8,13 +8,15 @@
 
 using namespace std;
 
-void kmeans_array_generate(cv::Mat src, std::vector<std::vector<double> > vec, int mode) {
+void kmeans_array_generate(cv::Mat src, std::vector<std::vector<double> >& vec, int mode) {
 	if(vec.size() != 0) {
 		vec.clear();
 	}
 
 	int rows = src.rows;
 	int cols = src.cols;
+
+	vec.resize(cols*rows);
 
 	int idx = 0;
 
@@ -26,9 +28,9 @@ void kmeans_array_generate(cv::Mat src, std::vector<std::vector<double> > vec, i
 
 	for(int i=0;i<rows;i++) {
 		for(int j=0;j<cols;j++) {
-			vec[idx][0] = ((double) j)/cols;
-			vec[idx][1] = ((double) i)/rows;
-			vec[idx][2] = ((double) hsv[0].at<uchar>(i, j));
+			vec[idx].push_back(((double) j)/cols);
+			vec[idx].push_back(((double) i)/rows);
+			vec[idx].push_back(((double) hsv[0].at<uchar>(i, j)));
 
 			idx++;
 		}
