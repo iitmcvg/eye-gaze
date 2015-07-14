@@ -35,7 +35,7 @@ void kmeans_array_generate(cv::Mat src, std::vector<std::vector<double> > vec, i
 	}
 }
 
-void kmeans_clusters_view(cv::Mat& src, std::vector<std::vector<double> > vec_labels) {
+void kmeans_clusters_view(cv::Mat& src, std::vector<int> vec_labels) {
 	int rows = src.rows;
 	int cols = src.cols;
 
@@ -44,9 +44,12 @@ void kmeans_clusters_view(cv::Mat& src, std::vector<std::vector<double> > vec_la
 	for(int i=0;i<rows;i++) {
 		for(int j=0;j<cols;j++) {
 			int clr = vec_labels[idx]*100 + 50;
-			src.at<Vec3b>(i, j)[0] = clr;
-			src.at<Vec3b>(i, j)[1] = clr;
-			src.at<Vec3b>(i, j)[2] = clr;
+
+			src.at<cv::Vec3b>(i, j)[0] = clr;
+			src.at<cv::Vec3b>(i, j)[1] = clr;
+			src.at<cv::Vec3b>(i, j)[2] = clr;
+
+			idx++;
 		}
 	}
 }

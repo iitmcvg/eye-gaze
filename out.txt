@@ -1,0 +1,20 @@
+mkdir -p obj bin
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/faceDetection.o src/faceDetection.cpp
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/pupilDetection.o src/pupilDetection.cpp
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/kalmanFilters.o src/kalmanFilters.cpp
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/dlib.o src/dlib/all/source.cpp
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/util.o src/util.cpp
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/kmeansUtils.o src/kmeansUtils.cpp
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+g++ -c -g -I./include -I./src/dlib/all/source.cpp -ljpeg -mavx -lm -lpthread -lX11 -DDLIB_HAVE_BLAS -DNDEBUG  -DDLIB_JPEG_SUPPORT -DDLIB_HAVE_AVX  -O3 `pkg-config --cflags opencv` -o obj/oic.o src/oic.cpp
+cc1plus: warning: ./src/dlib/all/source.cpp: not a directory [enabled by default]
+make: *** [obj/dlib.o] Interrupt
+make: *** [obj/util.o] Interrupt
+make: *** wait: No child processes.  Stop.
+make: *** Waiting for unfinished jobs....
+make: *** wait: No child processes.  Stop.

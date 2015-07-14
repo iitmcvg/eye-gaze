@@ -18,7 +18,7 @@ LDFLAGS = -ljpeg -mavx -lm -lpthread -lX11 `pkg-config --libs opencv` -DDLIB_HAV
 # $^ stores the dependency
 all: bin/oic
 
-bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/oic.o
+bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/oic.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 obj/dlib.o: src/dlib/all/source.cpp
@@ -35,6 +35,9 @@ obj/kalmanFilters.o: src/kalmanFilters.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 obj/util.o: src/util.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/kmeansUtils.o: src/kmeansUtils.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 #obj/viewUtils.o: src/viewUtils.cpp
