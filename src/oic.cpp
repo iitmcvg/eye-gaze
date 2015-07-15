@@ -53,7 +53,8 @@ int main(int argc, char** argv) {
 		std::vector<double> center_eye_proj(3);
 		std::vector<double> vec_cp_kalman_avg(3);
 
-		std::vector<std::vector<double> > vec_kmeans_data_l, vec_kmeans_centers_l;
+		std::vector<std::vector<double> > vec_kmeans_centers_l;
+		std::vector<float> vec_kmeans_data_l;
 
 		double Cf_left, Cf_right;
 
@@ -191,13 +192,12 @@ int main(int argc, char** argv) {
 				roi1_clr = frame_clr(rect1);
 				roi2_clr = frame_clr(rect2);
 
-				cv_image<bgr_pixel> cimg_kmeans_clr_l(roi1_clr);
 				kmeans_array_generate(roi1_clr, vec_kmeans_data_l, 0);
 				cout<<vec_kmeans_data_l.size()<<std::endl;
 
 				std::vector<int> vec_kmeans_labels_l(vec_kmeans_data_l.size());
-
-				roi1_clr.convertTo(roi1_clr, CV_32F, 1/255.0);
+				
+				/*roi1_clr.convertTo(roi1_clr, CV_32F, 1/255.0);
 				std::vector<cv::Mat> hsv;
 				cv::split(roi1_clr, hsv);
 
@@ -208,8 +208,8 @@ int main(int argc, char** argv) {
 				std::cout<<"h_clone"<<h_clone.size()<<endl;
 
 				cv::Mat kmeans_labels;
-
-				cv::kmeans(h_clone, 3, kmeans_labels, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
+*/
+				cv::kmeans(cv::Mat(vec_kmeans_data_l).reshape(1, vec_kmeans_data_l.size()), 3, vec_kmeans_labels_l, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
 					3, cv::KMEANS_PP_CENTERS);//, vec_kmeans_centers_l);
 
 				//TODO : Compute current values and correct values using Kalman filter
@@ -437,13 +437,18 @@ int main(int argc, char** argv) {
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
 
-				kmeans_clusters_view(roi1_clr, kmeans_labels);
+				
+				cv::Mat roi1_clustered = cv::Mat(roi1_clr.rows, roi1_clr.cols, CV_32F);
+				kmeans_clusters_view(roi1_clustered, vec_kmeans_labels_l);
+    			roi1_clustered.convertTo(roi1_clustered, CV_8U);
+
 /*
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(0,0)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,20)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,30)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,40)[0]))<<"\t";
 */
+				cv_image<uchar> cimg_kmeans_clr_l(roi1_clustered);
 				win_kmeans.clear_overlay();
 				win_kmeans.set_image(cimg_kmeans_clr_l);
 			}
