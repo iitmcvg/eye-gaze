@@ -43,16 +43,22 @@ void kmeans_clusters_view(cv::Mat& src, cv::Mat labels) {
 	int cols = src.cols;
 
 	int idx = 0;
+	int clr;
 	std::cout<<labels.size()<<"\t"<<rows;
 	for(int i=0;i<rows;i++) {
 		for(int j=0;j<cols;j++) {
-			int clr = labels.at<uchar>(0, idx)*100 + 50;
+			if(((int)(labels.at<uchar>(0, idx))) == 0) {
+				clr = 255;
+			}
+			else {
+				clr = 0;
+			}
 
 			src.at<cv::Vec3b>(i, j)[0] = clr;
 			src.at<cv::Vec3b>(i, j)[1] = clr;
 			src.at<cv::Vec3b>(i, j)[2] = clr;
 
-			std::cout<<"val0 "<<src.at<cv::Vec3b>(i, j)[0]<<"\t";
+			//std::cout<<"val "<<((int)(src.at<cv::Vec3b>(i, j)[0]))<<"\t";
 
 			idx++;
 		}

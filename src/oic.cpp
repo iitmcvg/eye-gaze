@@ -182,8 +182,8 @@ int main(int argc, char** argv) {
 
 
 				//cv::Rect rect2(cv::Point(shape.part(22).x(), shape.part(22).y()), cv::Point(shape.part(26).x(), rect1.y + rect1.height));
-				cv::rectangle(frame_clr, rect1, cv::Scalar(255, 255, 255), 1, 8, 0);
-				cv::rectangle(frame_clr, rect2, cv::Scalar(255, 255, 255), 1, 8, 0);
+				//cv::rectangle(frame_clr, rect1, cv::Scalar(255, 255, 255), 1, 8, 0);
+				//cv::rectangle(frame_clr, rect2, cv::Scalar(255, 255, 255), 1, 8, 0);
 				
 				roi1 = frame(rect1);
 				roi2 = frame(rect2);
@@ -211,8 +211,6 @@ int main(int argc, char** argv) {
 
 				cv::kmeans(h_clone, 3, kmeans_labels, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
 					3, cv::KMEANS_PP_CENTERS);//, vec_kmeans_centers_l);
-
-				kmeans_clusters_view(roi1_clr, kmeans_labels);
 
 				//TODO : Compute current values and correct values using Kalman filter
 
@@ -445,10 +443,18 @@ int main(int argc, char** argv) {
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_r, rect2, frame);
 */				
 
-				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
+				//draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
+
+				kmeans_clusters_view(roi1_clr, kmeans_labels);
+
+				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(0,0)[0]))<<"\t";
+				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,20)[0]))<<"\t";
+				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,30)[0]))<<"\t";
+				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,40)[0]))<<"\t";
+
 				win_kmeans.clear_overlay();
 				win_kmeans.set_image(cimg_kmeans_clr_l);
 			}
