@@ -411,12 +411,11 @@ int main(int argc, char** argv) {
 				kalman_predict_correct_cp_l(vec_cp_pos_l, vec_cp_pos_l_old, vec_cp_kalman_l);
 				kalman_predict_correct_cp_r(vec_cp_pos_r, vec_cp_pos_r_old, vec_cp_kalman_r);
 
-				make_unit_vector(vec_cp_kalman_l, vec_cp_kalman_l);
-				make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
+				make_unit_vector(vec_cp_pos_l, vec_cp_pos_l);
+				make_unit_vector(vec_cp_pos_r, vec_cp_pos_r);
 
 				std::cout<<"Vector CP "<<vec_cp_kalman_l[0]<<" "<<vec_cp_kalman_l[1]<<" "<<vec_cp_kalman_l[2]<<endl;
 				std::cout<<"Vector CP "<<vec_cp_kalman_r[0]<<" "<<vec_cp_kalman_r[1]<<" "<<vec_cp_kalman_r[2]<<endl;
-
 /*
 				vec_cp_kalman_l[0] = vec_ce_kalman_l[0] + vec_ep_kalman_l[0];
 				vec_cp_kalman_l[1] = vec_ce_kalman_l[1] + vec_ep_kalman_l[1];
@@ -429,32 +428,22 @@ int main(int argc, char** argv) {
 				make_unit_vector(vec_cp_kalman_l, vec_cp_kalman_l);
 				make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
 
+				vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
+				vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
+				vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
 
-				/*if(!is_point_in_mat(pt_p_kalman, roi1)) {
-					init_kalman_point_p(pt_p_pos);
-				}*/
-					vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
-					vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
-					vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;
-
-				//cv::circle(roi1, pt_p_kalman, 1, cv::Scalar(255,255,0), 1, 4, 0);
-/*
-				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_l, rect1, frame);				
-				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_r, rect2, frame);
-*/				
-
-				//draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
+				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
 				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
 
 				kmeans_clusters_view(roi1_clr, kmeans_labels);
-
+/*
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(0,0)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,20)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,30)[0]))<<"\t";
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(10,40)[0]))<<"\t";
-
+*/
 				win_kmeans.clear_overlay();
 				win_kmeans.set_image(cimg_kmeans_clr_l);
 			}
