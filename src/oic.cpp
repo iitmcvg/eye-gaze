@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 
 		cv::Rect rect1, rect2;
 
-		cv::Mat frame, frame_clr, temp, temp2, roi1, roi2, roi1_clr, roi2_clr;
+		cv::Mat frame, frame_clr, temp, temp2, roi1, roi2, roi1_clr, roi2_clr ,roi1_clr_temp;
 		int k_pt_e_l = 0, k_pt_p_l = 0, k_vec_ce_l = 0, k_vec_cp_l = 0, k_vec_ep_l = 0;
 		int k_pt_e_r = 0, k_pt_p_r = 0, k_vec_ce_r = 0, k_vec_cp_r = 0, k_vec_ep_r = 0;
 
@@ -191,6 +191,9 @@ int main(int argc, char** argv) {
 
 				roi1_clr = frame_clr(rect1);
 				roi2_clr = frame_clr(rect2);
+
+				roi1_clr.copyTo(roi1_clr_temp);
+
 
 				kmeans_array_generate(roi1_clr, vec_kmeans_data_l, 0);
 				cout<<vec_kmeans_data_l.size()<<std::endl;
@@ -441,6 +444,17 @@ int main(int argc, char** argv) {
 				cv::Mat roi1_clustered = cv::Mat(roi1_clr.rows, roi1_clr.cols, CV_32F);
 				kmeans_clusters_view(roi1_clustered, vec_kmeans_labels_l);
     			roi1_clustered.convertTo(roi1_clustered, CV_8U);
+
+
+				cv::Mat roi1_hsv, hue_otsu;
+				cv::cvtColor(roi1_clr_temp, roi1_hsv, CV_BGR2HSV);
+
+				std::vector<cv::Mat> hsv;
+				cv::split(roi1_hsv, hsv);
+
+				hue_otsu.create( hsv[0].size(), hsv[0].depth() );
+				cv::threshold(hsv[0], hue_otsu, 0, 255, cv::THRESH_BINARY + cv::THRESH_OTSU);
+
 
 /*
 				std::cout<<"val "<<((int)(roi1_clr.at<cv::Vec3b>(0,0)[0]))<<"\t";
