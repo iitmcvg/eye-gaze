@@ -21,6 +21,12 @@
 using namespace dlib;
 using namespace std;
 
+
+void preprocessROI(cv::Mat& roi_eye) {
+	GaussianBlur(roi_eye, roi_eye, cv::Size(3,3), 0, 0);
+	equalizeHist( roi_eye, roi_eye );
+}
+
 int main(int argc, char** argv) {
 	try	{
 		//Rm = std::atoi(argv[1])/100.0;
@@ -188,6 +194,9 @@ int main(int argc, char** argv) {
 				
 				roi1 = frame(rect1);
 				roi2 = frame(rect2);
+
+				preprocessROI(roi1);
+				preprocessROI(roi2);
 
 				roi1_clr = frame_clr(rect1);
 				roi2_clr = frame_clr(rect2);
@@ -374,13 +383,13 @@ int main(int argc, char** argv) {
 				kalman_predict_correct_ep_l(vec_ep_pos_l, vec_ep_pos_l_old, vec_ep_kalman_l);
 				kalman_predict_correct_ep_r(vec_ep_pos_r, vec_ep_pos_r_old, vec_ep_kalman_r);
 
-				vec_cp_pos_l[0] = (13.101*Cf_left*vec_ce_pos_l[0]) + vec_ep_pos_l[0];
-				vec_cp_pos_l[1] = (13.101*Cf_left*vec_ce_pos_l[1]) + vec_ep_pos_l[1];
-				vec_cp_pos_l[2] = (13.101*Cf_left*vec_ce_pos_l[2]) + vec_ep_pos_l[2];
+				vec_cp_pos_l[0] = (13.101*Cf_left*vec_ce_kalman_l[0]) + vec_ep_pos_l[0];
+				vec_cp_pos_l[1] = (13.101*Cf_left*vec_ce_kalman_l[1]) + vec_ep_pos_l[1];
+				vec_cp_pos_l[2] = (13.101*Cf_left*vec_ce_kalman_l[2]) + vec_ep_pos_l[2];
 
-				vec_cp_pos_r[0] = (13.101*Cf_right*vec_ce_pos_r[0]) + vec_ep_pos_r[0];
-				vec_cp_pos_r[1] = (13.101*Cf_right*vec_ce_pos_r[1]) + vec_ep_pos_r[1];
-				vec_cp_pos_r[2] = (13.101*Cf_right*vec_ce_pos_r[2]) + vec_ep_pos_r[2];
+				vec_cp_pos_r[0] = (13.101*Cf_right*vec_ce_kalman_r[0]) + vec_ep_pos_r[0];
+				vec_cp_pos_r[1] = (13.101*Cf_right*vec_ce_kalman_r[1]) + vec_ep_pos_r[1];
+				vec_cp_pos_r[2] = (13.101*Cf_right*vec_ce_kalman_r[2]) + vec_ep_pos_r[2];
 
 
 				vec_cp_vel_l[0] = vec_cp_pos_l[0] - vec_cp_pos_l_old[0];
@@ -432,8 +441,8 @@ int main(int argc, char** argv) {
 				vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
 				vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
 
-				draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
-				draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
+				draw_eye_gaze(pt_p_kalman_l, vec_cp_pos_l, rect1, frame_clr);				
+				draw_eye_gaze(pt_p_kalman_r, vec_cp_pos_r, rect2, frame_clr);
 
 				draw_facial_normal(frame_clr, shape, vec_ce_kalman_l);
 

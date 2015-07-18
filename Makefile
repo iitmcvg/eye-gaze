@@ -16,9 +16,15 @@ LDFLAGS = -ljpeg -mavx -lm -lpthread -lX11 `pkg-config --libs opencv` -DDLIB_HAV
 # $(VAR) gives value of the variable.
 # $@ stores the target
 # $^ stores the dependency
-all: bin/oic
+all: bin/oic bin/facegesmatch bin/facegescreate
 
 bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/oic.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+bin/facegescreate: obj/dlib.o obj/faceDetection.o obj/util.o obj/facegescreate.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+bin/facegesmatch: obj/dlib.o obj/faceDetection.o obj/util.o obj/facegesmatch.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 obj/dlib.o: src/dlib/all/source.cpp
@@ -44,6 +50,12 @@ obj/kmeansUtils.o: src/kmeansUtils.cpp
 #	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 obj/oic.o: src/oic.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/facegesmatch.o: src/facegesMatch.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/facegescreate.o: src/facegesCreate.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 # .PHONY tells make that 'all' or 'clean' aren't _actually_ files, and always
