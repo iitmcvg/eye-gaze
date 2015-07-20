@@ -121,7 +121,7 @@ void check_pupil(int x, int y, const cv::Mat &weight,double gx, double gy, cv::M
 			dotProduct = max(0.0,dotProduct);
       // square and multiply by the weight
 			if (true) {
-				Or[cx] += dotProduct * dotProduct * (Wr[cx]);
+				Or[cx] += dotProduct * dotProduct * (Wr[cx]+5);
 			} else {
 				Or[cx] += dotProduct * dotProduct;
 			}

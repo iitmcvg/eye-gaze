@@ -21,7 +21,7 @@ all: bin/oic bin/facegesmatch bin/facegescreate
 bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/oic.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
-bin/facegescreate: obj/dlib.o obj/faceDetection.o obj/util.o obj/facegescreate.o
+bin/facegescreate: obj/dlib.o obj/faceDetection.o obj/util.o obj/gestureDetection.o obj/facegescreate.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 bin/facegesmatch: obj/dlib.o obj/faceDetection.o obj/util.o obj/facegesmatch.o
@@ -56,6 +56,9 @@ obj/facegesmatch.o: src/facegesMatch.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 obj/facegescreate.o: src/facegesCreate.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/gestureDetection.o: src/gestureDetection.cpp src/util.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 # .PHONY tells make that 'all' or 'clean' aren't _actually_ files, and always

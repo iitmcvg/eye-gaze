@@ -14,6 +14,32 @@
 using namespace std;
 using namespace dlib;
 
+void read_vector_from_file(char* file_name, std::vector<std::vector<double> >& arr) {
+
+	/*
+		Function to read a vector of measurements from a text file.
+
+		@params:
+		file_name	Name of the file to be read
+		arr 		Vector to be constructed, passed by reference
+	*/
+	
+	std::ifstream file_in(file_name);
+	std::string line;
+
+	while(std::getline(file_in, line)) {
+		std::istringstream iss(line);
+		std::vector<double> vec(3);
+
+		if(!(iss >> vec[0] >> vec[1] >> vec[2])) {
+			break;
+		}
+
+		//std::cout<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
+		arr.push_back(vec);
+	}
+}
+
 void blow_up_rect(cv::Rect& rect, double f) {
 	rect.x = rect.x - (rect.width*(f - 1))/2.0;
 	rect.y = rect.y - (rect.height*(f - 1))/2.0;
