@@ -37,11 +37,13 @@ int main(int argc, char **argv) {
 
 	std::vector<std::vector<std::vector<double> > > gestures_learned(5);
 
-	read_vector_from_file("left2right_fast.txt", gestures_learned[0]);
-	read_vector_from_file("left_rock.txt", gestures_learned[1]);
-	read_vector_from_file("nod.txt", gestures_learned[2]);
-	read_vector_from_file("right_rock.txt", gestures_learned[3]);
-	read_vector_from_file("up2down_fast.txt", gestures_learned[4]);
+	//char* file_names[] = {"left2right_fast.txt", "left_rock.txt", "nod.txt", "right_rock.txt", "up2down_fast.txt"};
+
+	read_vector_from_file(argv[1], gestures_learned[0]);
+	read_vector_from_file(argv[2], gestures_learned[1]);
+	read_vector_from_file(argv[3], gestures_learned[2]);
+	read_vector_from_file(argv[4], gestures_learned[3]);
+	read_vector_from_file(argv[5], gestures_learned[4]);
 
 	int score_temp_1, score_temp_2, pos;
 	std::vector<double> vec_normal(3);
@@ -94,6 +96,7 @@ int main(int argc, char **argv) {
 
 				score_temp_1 = DTWScore(vec_current_bin, gestures_learned[0]);
 				pos = 0;
+				std::cout<<score_temp_1<<" ";
 
 				for(int i=1;i<gestures_learned.size();i++) {
 					score_temp_2 = DTWScore(vec_current_bin, gestures_learned[i]);
@@ -104,7 +107,8 @@ int main(int argc, char **argv) {
 					}
 				}
 
-				std::cout<<"Matched with gesture["<<pos<<"]"<<std::endl;
+				//std::cout<<"Matched with gesture["<<pos<<"]"<<std::endl;
+				std::cout<<argv[pos+1]<<std::endl;
 			}
 			else {
 				std::cout<<"Zero faces"<<std::endl;
