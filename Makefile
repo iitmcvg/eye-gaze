@@ -16,7 +16,7 @@ LDFLAGS = -ljpeg -mavx -lm -lpthread -lX11 `pkg-config --libs opencv` -DDLIB_HAV
 # $(VAR) gives value of the variable.
 # $@ stores the target
 # $^ stores the dependency
-all: bin/oic bin/facegesmatch bin/facegescreate
+all: bin/oic bin/facegesmatch bin/facegescreate bin/facegeslisten
 
 bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/oic.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
@@ -24,7 +24,10 @@ bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o
 bin/facegescreate: obj/dlib.o obj/faceDetection.o obj/util.o obj/gestureDetection.o obj/facegescreate.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
-bin/facegesmatch: obj/dlib.o obj/faceDetection.o obj/util.o obj/facegesmatch.o
+bin/facegesmatch: obj/dlib.o obj/faceDetection.o obj/util.o obj/gestureDetection.o obj/facegesmatch.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+bin/facegeslisten: obj/dlib.o obj/faceDetection.o obj/gestureDetection.o obj/util.o obj/facegeslisten.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 obj/dlib.o: src/dlib/all/source.cpp
@@ -58,7 +61,10 @@ obj/facegesmatch.o: src/facegesMatch.cpp
 obj/facegescreate.o: src/facegesCreate.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
-obj/gestureDetection.o: src/gestureDetection.cpp src/util.cpp
+obj/facegeslisten.o: src/facegesListen.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/gestureDetection.o: src/gestureDetection.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 # .PHONY tells make that 'all' or 'clean' aren't _actually_ files, and always
