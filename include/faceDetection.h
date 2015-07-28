@@ -42,7 +42,7 @@ struct FacePose {
 	void assign(FaceFeatures* f, FaceData* d);
 };
 
-void draw_facial_normal(cv::Mat& img, dlib::full_object_detection shape, std::vector<double> normal);
+void draw_facial_normal(cv::Mat& img, dlib::full_object_detection shape, std::vector<double> normal, double mag);
 void draw_crosshair(cv::Mat img, CvPoint centre, int circle_radius, int line_radius);
 void project_facial_pose(cv::Mat img, double normal[3], double sigma, double theta);
 double find_sigma(int ln, int lf, double Rn, double theta);

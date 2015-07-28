@@ -218,10 +218,10 @@ cv::Point get_pupil_coordinates(cv::Mat eye_mat,cv::Rect eye) {
 }
 void draw_eye_gaze(cv::Point pt, std::vector<double> vec_gaze, cv::Rect roi_eye, cv::Mat& img) {
 
-	double del_x = 70*vec_gaze[0];
-	double del_y = 70*vec_gaze[1];
+	double del_x = 20*vec_gaze[0];
+	double del_y = 20*vec_gaze[1];
 
-	cv::line(img, cv::Point(pt.x + roi_eye.x, pt.y + roi_eye.y), cv::Point(pt.x + del_x + roi_eye.x, pt.y + del_y + roi_eye.y), cv::Scalar(255, 255, 255), 2);
+	cv::line(img, cv::Point(pt.x + roi_eye.x, pt.y + roi_eye.y), cv::Point(pt.x + del_x + roi_eye.x, pt.y + del_y + roi_eye.y), cv::Scalar(255, 255, 255), 1);
 }
 
 double get_z_component(double Cf_left, cv::Point pt_p_kalman, cv::Point pt_e_kalman, std::vector<double> vec_ce_kalman) {	

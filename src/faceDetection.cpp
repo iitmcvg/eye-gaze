@@ -70,10 +70,10 @@ void FacePose::assign(FaceFeatures* f, FaceData* d) {
 		}
 	}
 
-void draw_facial_normal(cv::Mat& img, dlib::full_object_detection shape, std::vector<double> normal) {
+void draw_facial_normal(cv::Mat& img, dlib::full_object_detection shape, std::vector<double> normal, double mag) {
 
-	double del_x = 100*normal[0];
-	double del_y = 100*normal[1];
+	double del_x = mag*normal[0];
+	double del_y = mag*normal[1];
 
 	cv::line(img, cv::Point(shape.part(30).x(), shape.part(30).y()),
 		cv::Point(shape.part(30).x() + del_x, shape.part(30).y() + del_y), cv::Scalar(0), 3);
