@@ -17,8 +17,8 @@
 #include "util.h"
 
 #include "pupilCdf.h"
-
 #include "kmeansUtils.h"
+#include "gazeComputation.h"
 
 using namespace dlib;
 using namespace std;
@@ -28,36 +28,11 @@ void preprocessROI(cv::Mat& roi_eye) {
     equalizeHist( roi_eye, roi_eye );
 }
 
-double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_pose, double magnitude_normal, int mode) {
-    cv::Point p1, p2;
-    //mode : 0 for left eye, 1 for right eye
-    if(mode == 0) {
-        p1 = cv::Point(shape.part(42).x(), shape.part(42).y());
-        p2 = cv::Point(shape.part(45).x(), shape.part(45).y());
-    }
-    else if(mode == 1) {
-        p1 = cv::Point(shape.part(36).x(), shape.part(36).y());
-        p2 = cv::Point(shape.part(39).x(), shape.part(39).y());
-    }
-
-    double dx = p1.x - p2.x, dy = p1.y - p2.y;
-    double temp1, temp2, beta;
-    double n1 = face_pose->normal[0], n2 = face_pose->normal[1], n3 = face_pose->normal[2];
-    double beta_old = sqrt(dx*dx + dy*dy)/magnitude_normal;
-
-    temp1 = dx*dx*(1.0 - n2*n2);
-    temp2 = dy*dy*(1.0 - n1*n1);
-
-    beta = sqrt(temp1 + temp2)/((double)(magnitude_normal*fabs(n3)));
-    std::cout<<"Beta : "<<beta_old<<"  "<<beta<<std::endl;
-    return beta;
-}
-
 int main(int argc, char** argv) {
     try	{
 
         cv::VideoCapture cap(0);
-        image_window win, win_kmeans, win_cdf;
+        image_window win;
 
         FaceFeatures *face_features = new FaceFeatures();
         FaceData *face_data = new FaceData();
@@ -117,8 +92,6 @@ int main(int argc, char** argv) {
         int k_pt_e_l = 0, k_pt_p_l = 0, k_vec_ce_l = 0, k_vec_cp_l = 0, k_vec_ep_l = 0;
         int k_pt_e_r = 0, k_pt_p_r = 0, k_vec_ce_r = 0, k_vec_cp_r = 0, k_vec_ep_r = 0;
 
-        int frame_index = 0;
-
         while(!win.is_closed()) {
             cap >> frame_clr;
             cv::flip(frame_clr, frame_clr, 1);
@@ -177,16 +150,6 @@ int main(int argc, char** argv) {
                 face_data->assign(face_features);
 
                 face_pose->assign(face_features, face_data);
-               /* Cf_left = get_distance(cv::Point(shape.part(42).x(), shape.part(42).y()),
-                        cv::Point(shape.part(45).x(), shape.part(45).y()));
-                Cf_right = get_distance(cv::Point(shape.part(36).x(), shape.part(36).y()),
-                        cv::Point(shape.part(39).x(), shape.part(39).y()));
-
-                //std::cout<<"Yaw : "<<face_pose->yaw*180.0/3.14<<std::endl;
-                Cf_left = (Cf_left)/(14.0*cos(face_pose->yaw));
-                Cf_right = (Cf_right)/(14.0*cos(face_pose->yaw));*/
-
-                //std::cout<<"Cf_left : "<<Cf_left<<"    ";
 
                 Cf_left = get_conversion_factor(shape, face_pose, alpha, 0);
                 Cf_right = get_conversion_factor(shape, face_pose, alpha, 1);
@@ -229,12 +192,8 @@ int main(int argc, char** argv) {
                 pt_e_pos_r = get_mid_point(cv::Point(shape.part(36).x(), shape.part(36).y()),cv::Point(shape.part(39).x(), shape.part(39).y()));
 
 
-                //cv::Point(cv::Point((shape.part(23).x() + rect1.x + rect1.width)*0.5, shape.part(23).y()*(1.0-Wf) + Wf*(rect1.y + rect1.height)));
                 cv::circle(frame_clr, pt_e_pos_l, 1, cv::Scalar(255,0,0), 1, 4, 0);
                 cv::circle(frame_clr, pt_e_pos_r, 1, cv::Scalar(255,0,0), 1, 4, 0);
-
-                //retrace_eye_center(pt_e_pos, face_pose->normal, Cf_left);
-                //cv::circle(frame, pt_e_pos, 1, cv::Scalar(127,0,0), 1, 4, 0);
 
                 pt_e_pos_l.x -= rect1.x;
                 pt_e_pos_l.y -= rect1.y;
@@ -390,12 +349,6 @@ int main(int argc, char** argv) {
                 vec_cp_pos_r[1] = (mag_nor*Cf_right*vec_ce_kalman_r[1]) + vec_ep_pos_r[1];
                 vec_cp_pos_r[2] = (mag_nor*Cf_right*vec_ce_kalman_r[2]) + vec_ep_pos_r[2];
 
-                if(!frame_index) {
-                    //mag_nor = -vec_ep_pos_l[0]/(Cf_left*vec_ce_kalman_l[0]);
-                    frame_index++;
-                    //std::cout<<"Calibrated value : "<<mag_nor<<std::endl;
-                }
-
                 vec_cp_vel_l[0] = vec_cp_pos_l[0] - vec_cp_pos_l_old[0];
                 vec_cp_vel_l[1] = vec_cp_pos_l[1] - vec_cp_pos_l_old[1];
                 vec_cp_vel_l[2] = vec_cp_pos_l[2] - vec_cp_pos_l_old[2];
@@ -428,34 +381,19 @@ int main(int argc, char** argv) {
 
                 std::cout<<"Vector CP "<<vec_cp_kalman_l[0]<<" "<<vec_cp_kalman_l[1]<<" "<<vec_cp_kalman_l[2]<<endl;
                 std::cout<<"Vector CP "<<vec_cp_kalman_r[0]<<" "<<vec_cp_kalman_r[1]<<" "<<vec_cp_kalman_r[2]<<endl;
-                /*
-                   vec_cp_kalman_l[0] = vec_ce_kalman_l[0] + vec_ep_kalman_l[0];
-                   vec_cp_kalman_l[1] = vec_ce_kalman_l[1] + vec_ep_kalman_l[1];
-                   vec_cp_kalman_l[2] = vec_ce_kalman_l[2] + vec_ep_kalman_l[2];
-
-                   vec_cp_kalman_r[0] = vec_ce_kalman_r[0] + vec_ep_kalman_r[0];
-                   vec_cp_kalman_r[1] = vec_ce_kalman_r[1] + vec_ep_kalman_r[1];
-                   vec_cp_kalman_r[2] = vec_ce_kalman_r[2] + vec_ep_kalman_r[2];
-                   */
+                
                 make_unit_vector(vec_cp_kalman_l, vec_cp_kalman_l);
                 make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
 
-                vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0]);//2.0;
-                vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1]);//2.0;
-                vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2]);//2.0;		
+                vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
+                vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
+                vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
 
                 draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
                 //draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
                 cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
                 draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
-
-                //filter_image(roi1_temp);
-
-                //cv_image<unsigned char> cimg_roi_cdf(roi1_temp);
-                //win_cdf.clear_overlay();
-                //win_cdf.set_image(cimg_roi_cdf);
-
             }
             win.clear_overlay();
             win.set_image(cimg_clr);
