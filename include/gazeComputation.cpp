@@ -67,16 +67,23 @@ void solve_CR(std::vector<double> coeff_1, double const_1, std::vector<double> c
 	vec_CR_u[0] = 
 }
 
-<<<<<<< HEAD
-void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double& Y2) {
-
-=======
 void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double& Y2, double& h) {
+	std::vector<double> line(3);
+	line[0] = p2.y - p1.y;
+	line[1] = -(p2.x - p1.x);
+	line[2] =  p1.y*(p2.x - p1.x) - p1.x*(p2.y - p1.y);
+
+	cv::Point pupil_proj;
+	pupil_proj.x = -(line[0]*pupil.x + line[1]*pupil.y + line[2])*line[0]/(line[0]*line[0] + line[1]*line[1]) + pupil.x;
+	pupil_proj.y = -(line[0]*pupil.x + line[1]*pupil.y + line[2])*line[1]/(line[0]*line[0] + line[1]*line[1]) + pupil.y;
+
+	Y1 = get_distance (p1, pupil_proj);
+	Y2 = get_distance (p2, pupil_proj);
+	h = get_distance (pupil, pupil_proj);
 
 }
 
 void compute_vec_RP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP) {
 	double Y1, Y2, H;
 	get_section(p1, p2, pupil, Y1, Y2, H);
->>>>>>> 9f1d66bb11f560146ed9a976b426a96c098ef97b
 }
