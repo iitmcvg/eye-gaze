@@ -11,7 +11,7 @@
 #include "dlib/image_processing/render_face_detections.h"
 #include "dlib/gui_widgets.h"
 
-void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR) {
+void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR, double theta) {
 
 	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3), vec_CP(3);
 
@@ -36,12 +36,15 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	cross_product(vec_CM_u, vec_LR_u, vec_UD_u);
 	make_unit_vector(vec_UD_u, vec_UD_u);
 
-	solve_CR(vec_UD_u, vec_CM_u, vec_CR_u);
+	double const_1 = std::cos(theta/2.0);
+	double const_2 = 0.0;
+
+	solve(vec_UD_u, const_1, vec_CM_u, const_2, 1.0, vec_CR_u);
 	make_unit_vector(vec_CR_u, vec_CR_u);
 
 	get_section(p1, p2, pupil, Y1, Y2);
 	//Vector RP is in real world coordinates
-	compute_vec_CP(vec_LR_u, mag_LR, vec_CP, Y1, Y2);
+	compute_vec_CP(p1, p2, pupil, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR, vec_UD_u, mag_CP, vec_CP);
 
 
 
@@ -76,15 +79,15 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 	Y1 = get_distance (p1, pupil_proj);
 	Y2 = get_distance (p2, pupil_proj);
 	h = get_distance (pupil, pupil_proj);
-
 }
 
-void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, std::vector<double> vec_CP) {
+void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, double mag_CP, std::vector<double> vec_CP) {
 	double Y1, Y2, H;
 	get_section(p1, p2, pupil, Y1, Y2, H);
 
-	double S2R;
+	double S2R, const_1, const_2;
+	const_1 = (S2R*H)/std::cos(face_pose->pitch);
+	const_2 = mag_CR*(dot_product(vec_CR_u, vec_LR_u)) + ((mag_LR*mag_LR)*Y2/((double) (Y1 + Y2)));
 
-	
-
+	solve(vec_UD_u, const_1, vec_LR_u, const_2, mag_CP, vec_CP);
 }
