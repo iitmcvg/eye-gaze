@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
         std::vector<std::vector<double> > vec_kmeans_centers_l;
         std::vector<float> vec_kmeans_data_l;
 
-        double Cf_left, Cf_right, mag_nor = atoi(argv[1])/100.0, alpha = 30.0;
+        double Cf_left, Cf_right, mag_nor = 12.0, alpha = 30.0;
 
         //TODO : Initialize all vectors to [0, 0, 0];
         vec_ce_pos_l[0] = 0;vec_ce_pos_l[1] = 0;vec_ce_pos_l[2] = 0;
@@ -151,8 +151,8 @@ int main(int argc, char** argv) {
 
                 face_pose->assign(face_features, face_data);
 
-                Cf_left = get_conversion_factor(shape, face_pose, alpha, 0);
-                Cf_right = get_conversion_factor(shape, face_pose, alpha, 1);
+                //Cf_left = get_conversion_factor(shape, face_pose, alpha, 0);
+                //Cf_right = get_conversion_factor(shape, face_pose, alpha, 1);
 
                 std::vector<cv::Point> vec_pts_left_eye(0), vec_pts_right_eye(0);
 
@@ -175,7 +175,14 @@ int main(int argc, char** argv) {
                 preprocessROI(roi1);
                 preprocessROI(roi2);
 
-                roi1_clr = frame_clr(rect1);
+                pt_p_pos_l = get_pupil_coordinates(roi1, rect1);
+
+                double mag_CP = 12.0, mag_LR = 30.0, mag_CR = 12.0, mag_CM = 12.0, theta = 60*3.14/180.0;
+
+                compute_eye_gaze (face_pose, shape, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
+                draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr);
+
+/*              roi1_clr = frame_clr(rect1);
                 roi2_clr = frame_clr(rect2);
 
                 roi1_clr.copyTo(roi1_clr_temp);
@@ -393,7 +400,7 @@ int main(int argc, char** argv) {
                 //draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
                 cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
-                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
+                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);*/
             }
             win.clear_overlay();
             win.set_image(cimg_clr);

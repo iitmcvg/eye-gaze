@@ -2,7 +2,6 @@
 #define UTIL_H
 
 void read_vector_from_file(char* file_name, std::vector<std::vector<double> >& arr);
-
 void blow_up_rect(cv::Rect& rect, double f);
 void show_images(int e ,int l, int h, std::vector<cv::Mat> imgs);
 double get_distance(cv::Point p1, cv::Point p2);
@@ -15,6 +14,6 @@ double scalar_product(std::vector<double> vec1, std::vector<double> vec2);
 cv::Mat get_rotation_matrix_z(double theta);
 void get_rotated_vector(std::vector<double> vec, std::vector<double>& vec_rot);
 void get_reverse_vector(std::vector<double> vec, std::vector<double>& vec_rot);
-void cross_product(std::vector<double> vec1, std::vector<double> vec2, std::vector<double> product);
+void cross_product(std::vector<double> vec1, std::vector<double> vec2, std::vector<double>& product);
 
 #endif

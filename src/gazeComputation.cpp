@@ -16,12 +16,12 @@
 
 double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_pose, double magnitude_normal, int mode) {
     cv::Point p1, p2;
-    //mode : 0 for left eye, 1 for right eye
-    if(mode == 0) {
+    //mode : 1 for left eye, 2 for right eye
+    if(mode == 1) {
         p1 = cv::Point(shape.part(42).x(), shape.part(42).y());
         p2 = cv::Point(shape.part(45).x(), shape.part(45).y());
     }
-    else if(mode == 1) {
+    else if(mode == 2) {
         p1 = cv::Point(shape.part(36).x(), shape.part(36).y());
         p2 = cv::Point(shape.part(39).x(), shape.part(39).y());
     }
@@ -35,7 +35,9 @@ double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_
     temp2 = dy*dy*(1.0 - n1*n1);
 
     beta = sqrt(temp1 + temp2)/((double)(magnitude_normal*fabs(n3)));
-    std::cout<<"Beta : "<<beta_old<<"  "<<beta<<std::endl;
+    beta = 1.0/((double) beta);
+    
+    std::cout<<"Beta : "<<beta<<std::endl;
     return beta;
 }
 
@@ -92,7 +94,7 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 	h = get_distance (pupil, pupil_proj);
 }
 
-void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, double mag_CP, std::vector<double> vec_CP, double S2R) {
+void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, double mag_CP, std::vector<double>& vec_CP, double S2R) {
 	double Y1, Y2, H;
 	get_section(p1, p2, pupil, Y1, Y2, H);
 
@@ -103,24 +105,34 @@ void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_
 	solve(vec_UD_u, const_1, vec_LR_u, const_2, mag_CP, vec_CP, 1);
 }
 
-void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode) {
+void log_vec(std::string str, std::vector<double> vec) {
+	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
+}
 
-	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3), vec_CP(3);
+void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {
+
+	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3);
 	double S2R = get_conversion_factor(shape, face_pose, mag_CM, mode);
 
 	cv::Point p1, p2;
-    //mode : 0 for left eye, 1 for right eye
-	if(mode == 0) {
+    //mode : 1 for left eye, 2 for right eye
+	if(mode == 1) {
 		p1 = cv::Point(shape.part(42).x(), shape.part(42).y());
 		p2 = cv::Point(shape.part(45).x(), shape.part(45).y());
 	}
-	else if(mode == 1) {
+	else if(mode == 2) {
 		p1 = cv::Point(shape.part(36).x(), shape.part(36).y());
 		p2 = cv::Point(shape.part(39).x(), shape.part(39).y());
 	}
 
+	vec_CP[0] = 1.0;
+	vec_CP[1] = 1.0;
+	vec_CP[2] = 1.0;
+
 	compute_vec_LR(p1, p2, face_pose, vec_LR_u);
 	make_unit_vector(vec_LR_u, vec_LR_u);
+
+	log_vec("LR", vec_LR_u);
 
 	vec_CM_u[0] = face_pose->normal[0];
 	vec_CM_u[1] = face_pose->normal[1];
@@ -129,13 +141,17 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	cross_product(vec_CM_u, vec_LR_u, vec_UD_u);
 	make_unit_vector(vec_UD_u, vec_UD_u);
 
+	log_vec("UD", vec_UD_u);
+
 	double const_1 = std::cos(theta/2.0);
 	double const_2 = 0.0;
 
 	solve(vec_UD_u, const_1, vec_CM_u, const_2, 1.0, vec_CR_u, 1);
 	make_unit_vector(vec_CR_u, vec_CR_u);
 
-	//Vector RP is in real world coordinates
+	log_vec("CR", vec_CR_u);
+
 	compute_vec_CP(p1, p2, pupil, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR, vec_UD_u, mag_CP, vec_CP, S2R);
 
+	log_vec("CP", vec_CP);
 }
