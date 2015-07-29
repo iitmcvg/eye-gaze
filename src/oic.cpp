@@ -117,6 +117,8 @@ int main(int argc, char** argv) {
         int k_pt_e_l = 0, k_pt_p_l = 0, k_vec_ce_l = 0, k_vec_cp_l = 0, k_vec_ep_l = 0;
         int k_pt_e_r = 0, k_pt_p_r = 0, k_vec_ce_r = 0, k_vec_cp_r = 0, k_vec_ep_r = 0;
 
+        int frame_index = 0;
+
         while(!win.is_closed()) {
             cap >> frame_clr;
             cv::flip(frame_clr, frame_clr, 1);
@@ -219,19 +221,6 @@ int main(int argc, char** argv) {
                 cout<<vec_kmeans_data_l.size()<<std::endl;
 
                 std::vector<int> vec_kmeans_labels_l(vec_kmeans_data_l.size());
-
-                /*roi1_clr.convertTo(roi1_clr, CV_32F, 1/255.0);
-                  std::vector<cv::Mat> hsv;
-                  cv::split(roi1_clr, hsv);
-
-                  cv::Mat h_clone;
-                  hsv[0].copyTo(h_clone);
-                  h_clone = h_clone.reshape(0, hsv[0].rows*hsv[0].cols);
-
-                  std::cout<<"h_clone"<<h_clone.size()<<endl;
-
-                  cv::Mat kmeans_labels;
-                  */
                 cv::kmeans(cv::Mat(vec_kmeans_data_l).reshape(1, vec_kmeans_data_l.size()), 3, vec_kmeans_labels_l, cv::TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0),
                         3, cv::KMEANS_PP_CENTERS);//, vec_kmeans_centers_l);
 
@@ -390,9 +379,6 @@ int main(int argc, char** argv) {
                     ++k_vec_ep_r;
                 }
 
-                //TODO : EP vector is found in the plane of the screen. But it should actually be in the 
-                //       facial plane.
-
                 kalman_predict_correct_ep_l(vec_ep_pos_l, vec_ep_pos_l_old, vec_ep_kalman_l);
                 kalman_predict_correct_ep_r(vec_ep_pos_r, vec_ep_pos_r_old, vec_ep_kalman_r);
 
@@ -404,6 +390,12 @@ int main(int argc, char** argv) {
                 vec_cp_pos_r[1] = (mag_nor*Cf_right*vec_ce_kalman_r[1]) + vec_ep_pos_r[1];
                 vec_cp_pos_r[2] = (mag_nor*Cf_right*vec_ce_kalman_r[2]) + vec_ep_pos_r[2];
 
+                if(!frame_index) {
+                    //mag_nor = -vec_ep_pos_l[0]/(Cf_left*vec_ce_kalman_l[0]);
+                    frame_index++;
+                    //std::cout<<"Calibrated value : "<<mag_nor<<std::endl;
+                }
+
                 vec_cp_vel_l[0] = vec_cp_pos_l[0] - vec_cp_pos_l_old[0];
                 vec_cp_vel_l[1] = vec_cp_pos_l[1] - vec_cp_pos_l_old[1];
                 vec_cp_vel_l[2] = vec_cp_pos_l[2] - vec_cp_pos_l_old[2];
@@ -411,7 +403,6 @@ int main(int argc, char** argv) {
                 vec_cp_vel_r[0] = vec_cp_pos_r[0] - vec_cp_pos_r_old[0];
                 vec_cp_vel_r[1] = vec_cp_pos_r[1] - vec_cp_pos_r_old[1];
                 vec_cp_vel_r[2] = vec_cp_pos_r[2] - vec_cp_pos_r_old[2];
-
 
                 if(k_vec_cp_l == 0) {
                     vec_cp_pos_l_old[0] = 0;
@@ -449,15 +440,15 @@ int main(int argc, char** argv) {
                 make_unit_vector(vec_cp_kalman_l, vec_cp_kalman_l);
                 make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
 
-                vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
-                vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
-                vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
+                vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0]);//2.0;
+                vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1]);//2.0;
+                vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2]);//2.0;		
 
                 draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
                 //draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
-                cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + 3*vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + 3*vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
+                cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
-                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 100);
+                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
 
                 //filter_image(roi1_temp);
 
