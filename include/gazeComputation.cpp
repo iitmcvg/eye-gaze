@@ -62,8 +62,37 @@ void cross_product(std::vector<double> vec1, std::vector<double> vec2, std::vect
 	product[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0];
 }
 
-void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coeff_2, double const_2, double mag, std::vector<double>& vec) {
 
+void get_quadratic_solution (std::vector<double> coeff, double& solution, int mode) {
+	solution = -coeff[1] + mode*sqrt(coeff[1]*coeff[1] - 4*coeff[0]*coeff[2])/(2*coeff[0]);
+}
+
+void get_quadratic_equation (std::vector<double> coeff, std::vector<double>& quad_eqn) {
+	quad_eqn[0] = coeff[0]*coeff[0];
+	quad_eqn[1] = 2*coeff[1]*coeff[1];
+	quad_eqn[2] = coeff[2]*coeff[2];
+}
+
+void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coeff_2, double const_2, double mag, std::vector<double>& vec, int mode) {
+	double det = coeff_1[0]*coeff_2[1] - coeff_1[1]*coeff_2[0];
+
+	std::vector<double> linear_eqn_1(2), linear_eqn_2(2);
+	linear_eqn_1[0] = (coeff_1[1]*coeff_2[2] - coeff_1[2]*coeff_2[1])/det;
+	linear_eqn_1[1] = (coeff_1[3]*ceoff_2[1] - ceoff_1[1]*coeff_2[3])/det;
+	linear_eqn_2[0] = (coeff_1[2]*coeff_2[0] - ceoff_1[0]*coeff_2[2])/det;
+	linear_eqn_2[1] = (ceoff_1[0]*ceoff_2[3] - coeff_2[0]*coeff_1[3])/det;
+
+	std::vector<double> quad_eqn_1(3), quad_eqn_1(3), quad_eqn_final(3);
+	get_quadratic_equation(linear_eqn_1, quad_eqn_1);
+	get_quadratic_equation(linear_eqn_2, quad_eqn_2);
+
+	quad_eqn_final[0] = quad_eqn_1[0] + quad_eqn_2[0] + 1;
+	quad_eqn_final[1] = quad_eqn_1[1] + quad_eqn_2[1];
+	quad_eqn_final[2] = quad_eqn_1[2] + quad_eqn_2[2] - 1;
+
+	get_quadratic_solution (quad_eqn_final, vec[2], 1);
+	vec[0] = linear_eqn_1[0]*vec[2] + linear_eqn_1[1];
+	vec[1] = linear_eqn_2[0]*vec[2] + linear_eqn_2[1];
 }
 
 void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double& Y2, double& h) {
