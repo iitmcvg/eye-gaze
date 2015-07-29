@@ -18,7 +18,7 @@ LDFLAGS = -ljpeg -mavx -lm -lpthread -lX11 `pkg-config --libs opencv` -DDLIB_HAV
 # $^ stores the dependency
 all: bin/oic bin/facegesmatch bin/facegescreate bin/facegeslisten
 
-bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/pupilCdf.o obj/oic.o
+bin/oic: obj/dlib.o obj/faceDetection.o obj/pupilDetection.o obj/kalmanFilters.o obj/util.o obj/kmeansUtils.o obj/pupilCdf.o obj/gazeComputation.o obj/oic.o
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 bin/facegescreate: obj/dlib.o obj/faceDetection.o obj/util.o obj/gestureDetection.o obj/facegescreate.o
@@ -68,6 +68,9 @@ obj/gestureDetection.o: src/gestureDetection.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 obj/pupilCdf.o: src/pupilCdf.cpp
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+obj/gazeComputation.o: src/gazeComputation.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
 # .PHONY tells make that 'all' or 'clean' aren't _actually_ files, and always
