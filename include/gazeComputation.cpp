@@ -67,7 +67,12 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 
 }
 
-void compute_vec_RP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP) {
+void compute_vec_RP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, std::vector<double> vec_RP) {
 	double Y1, Y2, H;
 	get_section(p1, p2, pupil, Y1, Y2, H);
+
+	double S2R;
+
+	
+
 }
