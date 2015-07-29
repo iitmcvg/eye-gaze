@@ -13,7 +13,7 @@
 
 void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR) {
 
-	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3);
+	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3), vec_CP(3);
 
 	cv::Point p1, p2;
     //mode : 0 for left eye, 1 for right eye
@@ -41,7 +41,7 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 
 	get_section(p1, p2, pupil, Y1, Y2);
 	//Vector RP is in real world coordinates
-	compute_vec_RP(vec_LR_u, mag_LR, vec_RP, Y1, Y2);
+	compute_vec_CP(vec_LR_u, mag_LR, vec_CP, Y1, Y2);
 
 
 
@@ -59,8 +59,8 @@ void cross_product(std::vector<double> vec1, std::vector<double> vec2, std::vect
 	product[2] = vec1[0]*vec2[1] - vec1[1]*vec2[0];
 }
 
-void solve_CR(std::vector<double> coeff_1, double const_1, std::vector<double> coeff_2, double const_2, std::vector<double> vec_CR_u) {
-	vec_CR_u[0] = 
+void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coeff_2, double const_2, double mag, std::vector<double>& vec) {
+
 }
 
 void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double& Y2, double& h) {
@@ -79,7 +79,7 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 
 }
 
-void compute_vec_RP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, std::vector<double> vec_RP) {
+void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, std::vector<double> vec_CP) {
 	double Y1, Y2, H;
 	get_section(p1, p2, pupil, Y1, Y2, H);
 
