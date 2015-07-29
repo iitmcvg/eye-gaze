@@ -16,7 +16,6 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3);
 
 	cv::Point p1, p2;
-	double Y1, Y2, H;
     //mode : 0 for left eye, 1 for right eye
 	if(mode == 0) {
 		p1 = cv::Point(shape.part(42).x(), shape.part(42).y());
@@ -68,6 +67,7 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 
 }
 
-void compute_vec_RP(std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP, double Y1, double Y2, double H) {
-
+void compute_vec_RP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP) {
+	double Y1, Y2, H;
+	get_section(p1, p2, pupil, Y1, Y2, H);
 }
