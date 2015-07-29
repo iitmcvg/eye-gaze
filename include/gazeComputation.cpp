@@ -40,7 +40,7 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	solve_CR(vec_UD_u, vec_CM_u, vec_CR_u);
 	make_unit_vector(vec_CR_u, vec_CR_u);
 
-	get_section(p1, p2, pupil, Y1, Y2);
+	get_section(p1, p2, pupil, Y1, Y2, H);
 	//Vector RP is in real world coordinates
 	compute_vec_RP(vec_LR_u, mag_LR, vec_RP, Y1, Y2, H);
 
@@ -68,6 +68,6 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 
 }
 
-void compute_vec_RP(std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP, double Y1, double Y2) {
+void compute_vec_RP(std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_RP, double Y1, double Y2, double H) {
 
 }
