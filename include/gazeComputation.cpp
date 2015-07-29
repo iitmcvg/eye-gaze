@@ -16,10 +16,6 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3);
 
 	cv::Point p1, p2;
-<<<<<<< HEAD
-	double Y1, Y2;
-=======
->>>>>>> 9f1d66bb11f560146ed9a976b426a96c098ef97b
     //mode : 0 for left eye, 1 for right eye
 	if(mode == 0) {
 		p1 = cv::Point(shape.part(42).x(), shape.part(42).y());
