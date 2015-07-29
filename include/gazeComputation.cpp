@@ -88,7 +88,7 @@ void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coef
 
 	quad_eqn_final[0] = quad_eqn_1[0] + quad_eqn_2[0] + 1;
 	quad_eqn_final[1] = quad_eqn_1[1] + quad_eqn_2[1];
-	quad_eqn_final[2] = quad_eqn_1[2] + quad_eqn_2[2] - 1;
+	quad_eqn_final[2] = quad_eqn_1[2] + quad_eqn_2[2] - mag*mag;
 
 	get_quadratic_solution (quad_eqn_final, vec[2], 1);
 	vec[0] = linear_eqn_1[0]*vec[2] + linear_eqn_1[1];
