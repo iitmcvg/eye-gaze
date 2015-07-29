@@ -36,7 +36,7 @@ double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_
 
     beta = sqrt(temp1 + temp2)/((double)(magnitude_normal*fabs(n3)));
     beta = 1.0/((double) beta);
-    
+
     std::cout<<"Beta : "<<beta<<std::endl;
     return beta;
 }
@@ -48,13 +48,14 @@ void compute_vec_LR (cv::Point p1, cv::Point p2, FacePose* face_pose, std::vecto
 }
 
 void get_quadratic_solution (std::vector<double> coeff, double& solution, int mode) {
-	solution = -coeff[1] + mode*sqrt(coeff[1]*coeff[1] - 4*coeff[0]*coeff[2])/(2*coeff[0]);
+	solution = (-coeff[1] + mode*sqrt(coeff[1]*coeff[1] - 4*coeff[0]*coeff[2]))/(2*coeff[0]);
+	std::cout<<"soln : "<<solution<<std::endl;
 }
 
 void get_quadratic_equation (std::vector<double> coeff, std::vector<double>& quad_eqn) {
 	quad_eqn[0] = coeff[0]*coeff[0];
-	quad_eqn[1] = 2*coeff[1]*coeff[1];
-	quad_eqn[2] = coeff[2]*coeff[2];
+	quad_eqn[1] = 2*coeff[0]*coeff[1];
+	quad_eqn[2] = coeff[1]*coeff[1];
 }
 
 void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coeff_2, double const_2, double mag, std::vector<double>& vec, int mode) {
@@ -62,9 +63,9 @@ void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coef
 
 	std::vector<double> linear_eqn_1(2), linear_eqn_2(2);
 	linear_eqn_1[0] = (coeff_1[1]*coeff_2[2] - coeff_1[2]*coeff_2[1])/det;
-	linear_eqn_1[1] = (coeff_1[3]*coeff_2[1] - coeff_1[1]*coeff_2[3])/det;
+	linear_eqn_1[1] = (const_1*coeff_2[1] - coeff_1[1]*const_2)/det;
 	linear_eqn_2[0] = (coeff_1[2]*coeff_2[0] - coeff_1[0]*coeff_2[2])/det;
-	linear_eqn_2[1] = (coeff_1[0]*coeff_2[3] - coeff_2[0]*coeff_1[3])/det;
+	linear_eqn_2[1] = (coeff_1[0]*const_2 - coeff_2[0]*const_1)/det;
 
 	std::vector<double> quad_eqn_1(3), quad_eqn_2(3), quad_eqn_final(3);
 	get_quadratic_equation(linear_eqn_1, quad_eqn_1);
@@ -94,13 +95,16 @@ void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double
 	h = get_distance (pupil, pupil_proj);
 }
 
-void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, double mag_CP, std::vector<double>& vec_CP, double S2R) {
+void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, cv::Rect rect, FacePose* face_pose, std::vector<double> vec_CR_u, double mag_CR, std::vector<double> vec_LR_u, double mag_LR, std::vector<double> vec_UD_u, double mag_CP, std::vector<double>& vec_CP, double S2R) {
 	double Y1, Y2, H;
-	get_section(p1, p2, pupil, Y1, Y2, H);
+	get_section(p1, p2, cv::Point(pupil.x + rect.x, pupil.y + rect.y), Y1, Y2, H);
 
 	double const_1, const_2;
 	const_1 = (S2R*H)/std::cos(face_pose->pitch);
 	const_2 = mag_CR*(scalar_product(vec_CR_u, vec_LR_u)) + ((mag_LR*mag_LR)*Y2/((double) (Y1 + Y2)));
+
+	//std::cout<<"Y1 : "<<Y1<<" Y2 : "<<Y2<<" H : "<<H<<std::endl;
+	//std::cout<<"CP - constants : "<<const_1<<" "<<const_2<<std::endl;
 
 	solve(vec_UD_u, const_1, vec_LR_u, const_2, mag_CP, vec_CP, 1);
 }
@@ -109,7 +113,7 @@ void log_vec(std::string str, std::vector<double> vec) {
 	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
 }
 
-void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {
+void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {
 
 	std::vector<double> vec_LR_u(3), vec_RP(3), vec_CR_u(3), vec_CM_u(3), vec_UD_u(3);
 	double S2R = get_conversion_factor(shape, face_pose, mag_CM, mode);
@@ -132,7 +136,7 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	compute_vec_LR(p1, p2, face_pose, vec_LR_u);
 	make_unit_vector(vec_LR_u, vec_LR_u);
 
-	log_vec("LR", vec_LR_u);
+	//log_vec("LR", vec_LR_u);
 
 	vec_CM_u[0] = face_pose->normal[0];
 	vec_CM_u[1] = face_pose->normal[1];
@@ -141,17 +145,17 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	cross_product(vec_CM_u, vec_LR_u, vec_UD_u);
 	make_unit_vector(vec_UD_u, vec_UD_u);
 
-	log_vec("UD", vec_UD_u);
+	//log_vec("UD", vec_UD_u);
 
 	double const_1 = std::cos(theta/2.0);
 	double const_2 = 0.0;
 
-	solve(vec_UD_u, const_1, vec_CM_u, const_2, 1.0, vec_CR_u, 1);
+	solve(vec_UD_u, const_1, vec_CM_u, const_2, 1.0, vec_CR_u, -1);
 	make_unit_vector(vec_CR_u, vec_CR_u);
 
-	log_vec("CR", vec_CR_u);
+	//log_vec("CR", vec_CR_u);
 
-	compute_vec_CP(p1, p2, pupil, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR, vec_UD_u, mag_CP, vec_CP, S2R);
+	compute_vec_CP(p1, p2, pupil, rect, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR, vec_UD_u, mag_CP, vec_CP, S2R);
 
 	log_vec("CP", vec_CP);
 }

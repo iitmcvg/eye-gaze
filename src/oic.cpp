@@ -165,8 +165,8 @@ int main(int argc, char** argv) {
                 rect1 = cv::boundingRect(vec_pts_left_eye);
                 rect2 = cv::boundingRect(vec_pts_right_eye);
 
-                blow_up_rect(rect1, 2.0);
-                blow_up_rect(rect2, 2.0);
+                blow_up_rect(rect1, 1.5);
+                blow_up_rect(rect2, 1.5);
 
                 roi1 = frame(rect1);
                 roi2 = frame(rect2);
@@ -179,7 +179,7 @@ int main(int argc, char** argv) {
 
                 double mag_CP = 12.0, mag_LR = 30.0, mag_CR = 12.0, mag_CM = 12.0, theta = 60*3.14/180.0;
 
-                compute_eye_gaze (face_pose, shape, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
+                compute_eye_gaze (face_pose, shape, rect1, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
                 draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr);
 
 /*              roi1_clr = frame_clr(rect1);
