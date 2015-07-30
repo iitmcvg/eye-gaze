@@ -200,7 +200,10 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	compute_vec_CP(p1, p2, pupil, rect, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR,
 		vec_UD_u, mag_CP, vec_CP_r, S2R, 1);
 
-	if(!(vec_isnan(vec_CP_r) + vec_isnan(vec_CP_l))) {
+	double f1 = vec_isnan(vec_CP_l);
+	double f2 = vec_isnan(vec_CP_r);
+
+	if(f1 || f2) {
 			vec_CP[0] = (vec_CP_l[0] + vec_CP_r[0]);
 			vec_CP[1] = (vec_CP_l[1] + vec_CP_r[1]);
 			vec_CP[2] = (vec_CP_l[2] + vec_CP_r[2]);		
