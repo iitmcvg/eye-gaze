@@ -216,10 +216,10 @@ cv::Point get_pupil_coordinates(cv::Mat eye_mat,cv::Rect eye) {
 	return unscale_point(maxP, eye);
 
 }
-void draw_eye_gaze(cv::Point pt, std::vector<double> vec_gaze, cv::Rect roi_eye, cv::Mat& img) {
+void draw_eye_gaze(cv::Point pt, std::vector<double> vec_gaze, cv::Rect roi_eye, cv::Mat& img, int scale) {
 
-	double del_x = vec_gaze[0];
-	double del_y = vec_gaze[1];
+	double del_x = scale*vec_gaze[0];
+	double del_y = scale*vec_gaze[1];
 
 	cv::line(img, cv::Point(pt.x + roi_eye.x, pt.y + roi_eye.y), cv::Point(pt.x + del_x + roi_eye.x, pt.y + del_y + roi_eye.y), cv::Scalar(255, 255, 255), 1);
 }

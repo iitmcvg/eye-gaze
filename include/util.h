@@ -2,6 +2,7 @@
 #define UTIL_H
 
 void read_vector_from_file(char* file_name, std::vector<std::vector<double> >& arr);
+
 void blow_up_rect(cv::Rect& rect, double f);
 void show_images(int e ,int l, int h, std::vector<cv::Mat> imgs);
 double get_distance(cv::Point p1, cv::Point p2);

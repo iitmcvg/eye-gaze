@@ -139,13 +139,13 @@ int main(int argc, char** argv) {
                 dlib::full_object_detection shape = shapes[0];
 
                 face_features->assign(cv::Point(0,0),
-                        get_mid_point(cv::Point(shape.part(42).x(), shape.part(42).y()),
-                            cv::Point(shape.part(45).x(), shape.part(45).y())),
-                        get_mid_point(cv::Point(shape.part(36).x(), shape.part(36).y()),
-                            cv::Point(shape.part(39).x(), shape.part(39).y())),
-                        cv::Point(shape.part(30).x(), shape.part(30).y()), 
-                        get_mid_point(cv::Point(shape.part(48).x(), shape.part(48).y()),
-                            cv::Point(shape.part(54).x(), shape.part(54).y())));
+                    get_mid_point(cv::Point(shape.part(42).x(), shape.part(42).y()),
+                        cv::Point(shape.part(45).x(), shape.part(45).y())),
+                    get_mid_point(cv::Point(shape.part(36).x(), shape.part(36).y()),
+                        cv::Point(shape.part(39).x(), shape.part(39).y())),
+                    cv::Point(shape.part(30).x(), shape.part(30).y()), 
+                    get_mid_point(cv::Point(shape.part(48).x(), shape.part(48).y()),
+                        cv::Point(shape.part(54).x(), shape.part(54).y())));
 
                 face_data->assign(face_features);
 
@@ -177,12 +177,17 @@ int main(int argc, char** argv) {
 
                 pt_p_pos_l = get_pupil_coordinates(roi1, rect1);
 
-                double mag_CP = 14.0, mag_LR = 30.0, mag_CR = 14.0, mag_CM = 14.0, theta = 60*3.14/180.0;
+                double mag_LR = 20.784, mag_CR = 12.0, theta = 60*3.14/180.0;
+                double dist_AB = 5.101, mag_CM = dist_AB + 8.0, mag_CP = 13.101;
 
-                compute_eye_gaze (face_pose, shape, rect1, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
-                draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr);
+//compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP);
 
-/*              roi1_clr = frame_clr(rect1);
+                if (atoi(argv[1]) == 1) {
+                    compute_eye_gaze (face_pose, shape, rect1, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
+                    draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr, 2);
+                }
+                else if (atoi(argv[1]) == 0) {
+              roi1_clr = frame_clr(rect1);
                 roi2_clr = frame_clr(rect2);
 
                 roi1_clr.copyTo(roi1_clr_temp);
@@ -396,11 +401,12 @@ int main(int argc, char** argv) {
                 vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
                 vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
 
-                draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr);				
+                draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 5);				
                 //draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr);
                 cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
-                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);*/
+                draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
+            }
             }
             win.clear_overlay();
             win.set_image(cimg_clr);
