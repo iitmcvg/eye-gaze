@@ -14,6 +14,11 @@
 #include "util.h"
 #include "faceDetection.h"
 
+
+void log_vec(std::string str, std::vector<double> vec) {
+	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
+}
+
 double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_pose, double magnitude_normal, int mode) {
     cv::Point p1, p2;
     //mode : 1 for left eye, 2 for right eye
@@ -75,6 +80,7 @@ void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coef
 	quad_eqn_final[1] = quad_eqn_1[1] + quad_eqn_2[1];
 	quad_eqn_final[2] = quad_eqn_1[2] + quad_eqn_2[2] - mag*mag;
 
+	log_vec("quad_eqn_final : ", quad_eqn_final);
 	get_quadratic_solution (quad_eqn_final, vec[2], mode);
 	vec[0] = linear_eqn_1[0]*vec[2] + linear_eqn_1[1];
 	vec[1] = linear_eqn_2[0]*vec[2] + linear_eqn_2[1];
@@ -107,10 +113,6 @@ void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, cv::Rect rect, 
 	//std::cout<<"CP - constants : "<<const_1<<" "<<const_2<<std::endl;
 
 	solve(vec_UD_u, const_1, vec_LR_u, const_2, mag_CP, vec_CP, 1);
-}
-
-void log_vec(std::string str, std::vector<double> vec) {
-	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
 }
 
 void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {

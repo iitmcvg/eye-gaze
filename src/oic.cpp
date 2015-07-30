@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
 
                 pt_p_pos_l = get_pupil_coordinates(roi1, rect1);
 
-                double mag_CP = 12.0, mag_LR = 30.0, mag_CR = 12.0, mag_CM = 12.0, theta = 60*3.14/180.0;
+                double mag_CP = 14.0, mag_LR = 30.0, mag_CR = 14.0, mag_CM = 14.0, theta = 60*3.14/180.0;
 
                 compute_eye_gaze (face_pose, shape, rect1, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
                 draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr);
