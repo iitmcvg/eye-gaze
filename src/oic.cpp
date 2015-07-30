@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
 
                 pt_p_pos_l = get_pupil_coordinates(roi1, rect1);
 
-                double mag_LR = 20.784, mag_CR = 12.0, theta = 60*3.14/180.0;
+                double mag_LR = 30.0, mag_CR = 12.0, theta = 113.4*3.14/180.0;
                 double dist_AB = 5.101, mag_CM = dist_AB + 8.0, mag_CP = 13.101;
 
 //compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP);

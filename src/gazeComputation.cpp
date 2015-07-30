@@ -47,8 +47,12 @@ double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_
 }
 
 void compute_vec_LR (cv::Point p1, cv::Point p2, FacePose* face_pose, std::vector<double>& LR) {
+	double scale = 20.784/30.0;
+
 	LR[0] = p1.x - p2.x;
 	LR[1] = p1.y - p2.y;
+	LR[0] = LR[0]*scale;
+	LR[1] = LR[1]*scale;
 	LR[2] = -(LR[0]*face_pose->normal[0] + LR[1]*face_pose->normal[1])/face_pose->normal[3];
 }
 
@@ -91,6 +95,7 @@ void solve(std::vector<double> coeff_1, double const_1, std::vector<double> coef
 
 void get_section(cv::Point p1, cv::Point p2, cv::Point pupil, double& Y1, double& Y2, double& h) {
 	std::vector<double> line(3);
+
 	line[0] = p2.y - p1.y;
 	line[1] = -(p2.x - p1.x);
 	line[2] =  p1.y*(p2.x - p1.x) - p1.x*(p2.y - p1.y);
@@ -114,7 +119,7 @@ void compute_vec_CP(cv::Point p1, cv::Point p2, cv::Point pupil, cv::Rect rect, 
 	get_section(p1, p2, cv::Point(pupil.x + rect.x, pupil.y + rect.y), Y1, Y2, H);
 
 	double const_1, const_2;
-	const_1 = (S2R*H)/std::cos(face_pose->pitch);
+	const_1 = (S2R*H);///std::cos(face_pose->pitch);
 	if(mode == 1) {
 		const_2 = mag_CR*(scalar_product(vec_CR_u, vec_LR_u)) + ((mag_LR*Y1)/((double) (Y1 + Y2)));
 	}
@@ -141,10 +146,9 @@ bool vec_isnan(std::vector<double>& vec) {
 		for(int i=0; i<vec.size(); i++) {
 			vec[i] = 0.0;
 		}
-		return true;
 	}
 
-	return false;
+	return (1-f);
 }
 
 void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {
@@ -196,12 +200,10 @@ void compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, c
 	compute_vec_CP(p1, p2, pupil, rect, face_pose, vec_CR_u, mag_CR, vec_LR_u, mag_LR,
 		vec_UD_u, mag_CP, vec_CP_r, S2R, 1);
 
-	if(vec_isnan(vec_CP_l)) {
-		if(vec_isnan(vec_CP_r)) {
+	if(!(vec_isnan(vec_CP_r) + vec_isnan(vec_CP_l))) {
 			vec_CP[0] = (vec_CP_l[0] + vec_CP_r[0]);
 			vec_CP[1] = (vec_CP_l[1] + vec_CP_r[1]);
-			vec_CP[2] = (vec_CP_l[2] + vec_CP_r[2]);	
-		}
+			vec_CP[2] = (vec_CP_l[2] + vec_CP_r[2]);		
 	}
 	else {
 		vec_CP[0] = (vec_CP_l[0] + vec_CP_r[0])/2.0;
