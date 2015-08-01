@@ -7,49 +7,45 @@
 
 void filter_image(cv::Mat roi ) {
 
-	int histSize[] = {256};
-	float range[] = { 0, 255 } ; 
-	const float* histRange[] = { range };
-	bool uniform = true;
-	bool accumulate = false;
-	int* channels = {0};
-	cv::Mat histogram;
-    cv::Mat temproi;
-    roi.copyTo(temproi);
-
-	cv::calcHist( &temproi, 1, channels, cv::Mat(), histogram, 1, histSize, histRange, uniform, accumulate );
-
 	std::vector<double> cdf(256);
+	double temp;
 
-	//cv::normalize(histogram, histogram, 0, roi.rows*roi.cols, NORM_MINMAX, -1, Mat() );
-	double sum = 0;
-	for(int i=0; i < histSize[0]; i++) {
-		double value;
-
-		if(i == 0) {
-			value = (histogram.at<float>(i));
-        }
-		else {
-			value = (histogram.at<float>(i)) + cdf[i-1];
-		}
-		
-		std::cout<<value<<std::endl;
-
-		cdf[i] = value;
-		sum += value;
-		//std::cout<<(int)roi.at<uchar>(10,10)<<std::endl;
-		std::cout<<"size "<<histogram.size()<<" "<<histogram.at<float>(i)<<std::endl;
+	for(int i = 0; i<256; i++) {
+		cdf[i] = 0;
 	}
 
-	/*for(int i = 0; i < roi.rows; i++) {
+	for(int i = 0; i < roi.rows; i++) {
 		for(int j = 0; j < roi.cols; j++) {
-			if(cdf[roi.at<uchar>(j,i)] < 0.05 * sum) {
-				roi.at<uchar>(j,i) = 0;
+			++cdf[roi.at<uchar>(i,j)];
+		}
+	}
+
+	for(int i=0; i < 256; i++) {
+		double value;
+		if(i != 0) {
+			value = cdf[i];
+			cdf[i] += cdf[i-1];
+		}
+		std::cout<<"CDF- "<<i<<" = "<<cdf[i]<<std::endl;
+	}
+
+	temp = cdf[0];
+	for(int i=1; i<256;i++) {
+		if(cdf[i] > temp) {
+			temp = cdf[i];
+		}
+	}
+
+	std::cout<<"Thresh : "<<0.05 * roi.rows * roi.cols<<std::endl;
+
+	for(int i = 0; i < roi.rows; i++) {
+		for(int j = 0; j < roi.cols; j++) {
+			if(cdf[roi.at<uchar>(i,j)] >= 0.05 * temp) {
+				roi.at<uchar>(i,j) = 0;
 			}
 			else {
-				roi.at<uchar>(j,i) = 255;
+				roi.at<uchar>(i,j) = 255;
 			}
 		}
-	}*/
-    return;
+	}
 }

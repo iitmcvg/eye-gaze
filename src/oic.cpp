@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     try	{
 
         cv::VideoCapture cap(0);
-        image_window win;
+        image_window win, win1;
 
         FaceFeatures *face_features = new FaceFeatures();
         FaceData *face_data = new FaceData();
@@ -185,6 +185,11 @@ int main(int argc, char** argv) {
                 if (atoi(argv[1]) == 1) {
                     compute_eye_gaze (face_pose, shape, rect1, pt_p_pos_l, mag_CP, mag_LR, mag_CR, mag_CM, theta, 1, vec_cp_pos_l);
                     draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr, 2);
+                }
+                else if (atoi(argv[1]) == 2) {
+                    filter_image(roi1);
+                    cv_image<unsigned char> roi1_img(roi1);
+                    win1.set_image(roi1_img);
                 }
                 else if (atoi(argv[1]) == 0) {
               roi1_clr = frame_clr(rect1);
