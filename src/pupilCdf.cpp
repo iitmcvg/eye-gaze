@@ -26,7 +26,7 @@ void filter_image(cv::Mat roi ) {
 			value = cdf[i];
 			cdf[i] += cdf[i-1];
 		}
-		std::cout<<"CDF- "<<i<<" = "<<cdf[i]<<std::endl;
+		std::cout<<"CDF-"<<i<<" = "<<cdf[i]<<std::endl;
 	}
 
 	nf = cdf[0];
@@ -36,8 +36,6 @@ void filter_image(cv::Mat roi ) {
 		}
 	}
 
-	std::cout<<"Thresh : "<<0.05 * roi.rows * roi.cols<<std::endl;
-
 	temp = roi.at<uchar>(0,0);
 	pos_i = 0;
 	pos_j = 0;
@@ -45,7 +43,7 @@ void filter_image(cv::Mat roi ) {
 	for(int i = 0; i < roi.rows; i++) {
 		for(int j = 0; j < roi.cols; j++) {
 			if(cdf[roi.at<uchar>(i,j)] >= 0.05 * nf) {
-				roi.at<uchar>(i,j) = 255;
+				//roi.at<uchar>(i,j) = 255;
 			}
 			else {
 				if(roi.at<uchar>(i,j) <= temp) {
@@ -53,10 +51,9 @@ void filter_image(cv::Mat roi ) {
 					pos_j = j;
 					temp = roi.at<uchar>(i,j);
 				}
-				roi.at<uchar>(i,j) = 255;
+				//roi.at<uchar>(i,j) = 255;
 			}
 		}
 	}
-
-	roi.at<uchar>(pos_i,pos_j) = 0;
+	roi.at<uchar>(pos_i,pos_j) = 255;
 }
