@@ -187,8 +187,10 @@ int main(int argc, char** argv) {
                     draw_eye_gaze(pt_p_pos_l, vec_cp_pos_l, rect1, frame_clr, 2);
                 }
                 else if (atoi(argv[1]) == 2) {
-                    filter_image(roi1);
-                    cv_image<unsigned char> roi1_img(roi1);
+                    roi1_clr = frame_clr(rect1);
+                    filter_image(roi1_clr, pt_p_pos_l);
+                    //cv::circle(roi1_clr, pt_e_pos_l, 1, cv::Scalar(255,0,0), 1, 4, 0);
+                    cv_image<bgr_pixel> roi1_img(roi1_clr);
                     win1.set_image(roi1_img);
                 }
                 else if (atoi(argv[1]) == 0) {
