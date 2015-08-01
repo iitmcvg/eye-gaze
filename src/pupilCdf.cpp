@@ -12,6 +12,7 @@ void filter_image(cv::Mat roi_clr, cv::Point& pt_pupil) {
 	cv::cvtColor(roi_clr, roi, CV_BGR2GRAY);
 
 	//Preprocessing
+    GaussianBlur(roi, roi, cv::Size(3,3), 0, 0);
 	cv::equalizeHist(roi, roi);
 
 	cv::Mat mask;
