@@ -14,11 +14,6 @@
 #include "util.h"
 #include "faceDetection.h"
 
-
-void log_vec(std::string str, std::vector<double> vec) {
-	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
-}
-
 double get_conversion_factor (dlib::full_object_detection shape, FacePose* face_pose, double magnitude_normal, int mode) {
 	cv::Point p1, p2;
     //mode : 1 for left eye, 2 for right eye
