@@ -23,8 +23,15 @@ void faceModel::assign(full_object_detection shape) {
 }
 
 cv::Point faceModel::getPupil(int mode) {
+    assert(mode == MODE_LEFT || mode == MODE_RIGHT);
+    std::vector<cv::Point> ptsEye(0);
+    cv::Mat roiEye = cv::boundingRect();
+    if(mode == MODE_LEFT) {
+        
+    }
+    else {
 
-
+    }
 }
 
 std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
