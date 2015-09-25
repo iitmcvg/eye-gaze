@@ -10,9 +10,10 @@ class Face {
 	static const int INDEX_LEFT_EYEBROW = 1;
 	static const int INDEX_RIGHT_EYE = 2;
 	static const int INDEX_RIGHT_EYEBROW = 3;
-	static const int INDEX_NOSE = 4;
-	static const int INDEX_MOUTH_OUTER = 5;
-	static const int INDEX_MOUTH_INNER = 6;
+	static const int INDEX_NOSE_UPPER = 4;
+	static const int INDEX_NOSE_LOWER = 5;	
+	static const int INDEX_MOUTH_OUTER = 6;
+	static const int INDEX_MOUTH_INNER = 7;
 
 
 	full_object_detection faceShape;
