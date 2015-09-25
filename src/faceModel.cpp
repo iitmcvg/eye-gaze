@@ -52,7 +52,7 @@ cv::Point faceModel::getPupil(int mode) {
 }
 
 
-std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
+std::vector<cv::Point> faceModel::getDescriptors(int index) {
 
 	assert(index == INDEX_LEFT_EYE || index == INDEX_RIGHT_EYE || index == INDEX_LEFT_EYE_BROW || index == INDEX_RIGHT_EYE_BROW 
 		|| index == INDEX_NOSE_UPPER || index == INDEX_NOSE_LOWER || index == INDEX_MOUTH_OUTER || index == INDEX_MOUTH_INNER); 
