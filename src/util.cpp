@@ -14,6 +14,10 @@
 using namespace std;
 using namespace dlib;
 
+void log_vec(std::string str, std::vector<double> vec) {
+	std::cout<<str<<" : "<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<std::endl;
+}
+
 void cross_product(std::vector<double> vec1, std::vector<double> vec2, std::vector<double>& product) {
 	product[0] = vec1[1]*vec2[2] - vec1[2]*vec2[1];
 	product[1] = vec1[2]*vec2[0] - vec1[0]*vec2[2];

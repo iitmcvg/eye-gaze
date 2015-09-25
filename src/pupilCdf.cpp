@@ -10,7 +10,7 @@ void filter_image(cv::Mat roi_clr, cv::Point& pt_pupil) {
 	std::vector<double> cdf(256);
 	cv::Mat roi;
 	cv::cvtColor(roi_clr, roi, CV_BGR2GRAY);
-
+	std::cout<<"roi size : "<<roi_clr.size()<<std::endl;
 	//Preprocessing
     GaussianBlur(roi, roi, cv::Size(3,3), 0, 0);
 	cv::equalizeHist(roi, roi);
@@ -54,6 +54,8 @@ void filter_image(cv::Mat roi_clr, cv::Point& pt_pupil) {
 	pos_pmi_i = 0;
 	pos_pmi_j = 0;
 
+	cv::erode( mask, mask, element_erode );
+
 	for(int i = 0; i < roi.rows; i++) {
 		for(int j = 0; j < roi.cols; j++) {
 			if(cdf[roi.at<uchar>(i,j)] >= 0.05 * nf) {
@@ -72,20 +74,21 @@ void filter_image(cv::Mat roi_clr, cv::Point& pt_pupil) {
 		}
 	}
 
-	cv::erode( mask, mask, element_erode );
-
 	double avg_PI = 0;
+	int window_size;
+	window_size = roi_clr.cols*roi_clr.rows/175;
+	std::cout<<"window_size : "<<window_size<<std::endl;
 
-	for(int i = pos_pmi_i - 5; i < pos_pmi_i + 5; i++) {
-		for(int j = pos_pmi_j - 5; j < pos_pmi_j + 5; j++) {
+	for(int i = pos_pmi_i - window_size; i < pos_pmi_i + window_size; i++) {
+		for(int j = pos_pmi_j - window_size; j < pos_pmi_j + window_size; j++) {
 			if(mask.at<uchar>(i,j)) {
 				avg_PI += roi.at<uchar>(i,j);
 			}
 		}
 	}
 
-	for(int i = pos_pmi_i - 5; i < pos_pmi_i + 5; i++) {
-		for(int j = pos_pmi_j - 5; j < pos_pmi_j + 5; j++) {
+	for(int i = pos_pmi_i - window_size; i < pos_pmi_i + window_size; i++) {
+		for(int j = pos_pmi_j - window_size; j < pos_pmi_j + window_size; j++) {
 			if(roi.at<uchar>(i,j) > ((int)avg_PI)) {
 				mask.at<uchar>(i,j) = 0;
 			}
@@ -93,8 +96,6 @@ void filter_image(cv::Mat roi_clr, cv::Point& pt_pupil) {
 	}
 
 	cv::erode( mask, mask, element_erode );
-
-	//mask.copyTo(roi);
 
 	cv::Moments m = cv::moments(mask, 1);
 	int pos_i = (int)(m.m10/m.m00), pos_j = (int)(m.m01/m.m00);
