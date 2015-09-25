@@ -16,44 +16,36 @@
 #include "faceDetection.h"
 #include "pupilDetection.h"
 
-// using namespace std;
-// using namespace dlib;
+void preprocessROI(cv::Mat& roi_eye) {
+	GaussianBlur(roi_eye, roi_eye, cv::Size(3,3), 0, 0);
+	equalizeHist( roi_eye, roi_eye );
+}
 
 void faceModel::assign(full_object_detection shape , cv::Mat image) {
 	faceShape = shape;
 	image.copyTo(inputImage);
+
+	descriptors.clear();
+
+	std::vector<cv::Point> leftEyePoints = getFeatureDescriptors(INDEX_LEFT_EYE);
+	rectLeftEye = cv::boundingRect(leftEyePoints)
+	roiLeftEye = inputImage(rectLeftEye)
+	preprocessROI(roiLeftEye);
+	descriptors.push_back(get_pupil_coordinates(roiLeftEye,rectLeftEye));
+
+	std::vector<cv::Point> rightEyePoints = getFeatureDescriptors(INDEX_RIGHT_EYE);
+	rectRightEye = cv::boundingRect(rightEyePoints)
+	roiRightEye = inputImage(rectRightEye)
+	preprocessROI(roiRightEye);
+	descriptors.push_back(get_pupil_coordinates(roiRightEye,rectRightEye));
 }
 
 cv::Point faceModel::getPupil(int mode) {
-
-	assert(mode == MODE_LEFT || mode == MODE_RIGHT);
-
-	void preprocessROI(cv::Mat& roi_eye) {
-		GaussianBlur(roi_eye, roi_eye, cv::Size(3,3), 0, 0);
-		equalizeHist( roi_eye, roi_eye );
-	}
-	
-	if (mode == MODE_LEFT) {
-		std::vector<cv::Point> leftEyePoints = getFeatureDescriptors(INDEX_LEFT_EYE);
-		rectLeftEye = cv::boundingRect(leftEyePoints)
-		roiLeftEye = inputImage(rectLeftEye)
-		preprocessROI(roiLeftEye);
-		cv::Point pupilLeft = get_pupil_coordinates(roiLeftEye,rectLeftEye);
-		return pupilLeft;
-	}
-	if (mode == MODE_RIGHT) {
-		std::vector<cv::Point> rightEyePoints = getFeatureDescriptors(INDEX_RIGHT_EYE);
-		rectRightEye = cv::boundingRect(rightEyePoints)
-		roiRightEye = inputImage(rectRightEye)
-		preprocessROI(roiRightEye);
-		cv::Point pupilRight = get_pupil_coordinates(roiRightEye,rectRightEye);
-		return pupilRight;
-	}
+	assert(mode == INDEX_LEFT_EYE_PUPIL || mode == INDEX_RIGHT_EYE_PUPIL);
+	return descriptors[mode - INDEX_LEFT_EYE_PUPIL];
 }
 
-
 std::vector<cv::Point> faceModel::getDescriptors(int index) {
-
 	assert(index == INDEX_LEFT_EYE || index == INDEX_RIGHT_EYE || index == INDEX_LEFT_EYE_BROW || index == INDEX_RIGHT_EYE_BROW 
 		|| index == INDEX_NOSE_UPPER || index == INDEX_NOSE_LOWER || index == INDEX_MOUTH_OUTER || index == INDEX_MOUTH_INNER); 
 
