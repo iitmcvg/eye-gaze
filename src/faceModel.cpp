@@ -34,7 +34,6 @@ cv::Point faceModel::getPupil(int mode) {
 	}
 	
 	if (mode == MODE_LEFT) {
-
 		std::vector<cv::Point> leftEyePoints = getFeatureDescriptors(INDEX_LEFT_EYE);
 		rectLeftEye = cv::boundingRect(leftEyePoints)
 		roiLeftEye = inputImage(rectLeftEye)
@@ -43,7 +42,6 @@ cv::Point faceModel::getPupil(int mode) {
 		return pupilLeft;
 	}
 	if (mode == MODE_RIGHT) {
-
 		std::vector<cv::Point> rightEyePoints = getFeatureDescriptors(INDEX_RIGHT_EYE);
 		rectRightEye = cv::boundingRect(rightEyePoints)
 		roiRightEye = inputImage(rectRightEye)
