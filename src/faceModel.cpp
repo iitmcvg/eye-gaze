@@ -22,12 +22,35 @@ void preprocessROI(cv::Mat& roi_eye) {
 	equalizeHist( roi_eye, roi_eye );
 }
 
+double find_sigma(int ln, int lf, double Rn, double theta) {
+	double dz=0;
+	double sigma;
+	double m1 = ((double)ln*ln)/((double)lf*lf);
+	double m2 = (cos(theta))*(cos(theta));
+
+	if (m2 == 1)
+	{
+		dz = sqrt(	(Rn*Rn)/(m1 + (Rn*Rn))	);
+	}
+	if (m2>=0 && m2<1)
+	{
+		dz = sqrt(	((Rn*Rn) - m1 - 2*m2*(Rn*Rn) + sqrt(	((m1-(Rn*Rn))*(m1-(Rn*Rn))) + 4*m1*m2*(Rn*Rn)	))/ (2*(1-m2)*(Rn*Rn))	);
+	}
+	sigma = acos(dz);
+	return sigma;
+}
+
 void faceModel::assign(full_object_detection shape , cv::Mat image) {
 	faceShape = shape;
 	image.copyTo(inputImage);
 
 	descriptors.clear();
 
+	computePupil();
+	computeNormal();
+}
+
+void faceModel::computePupil() {
 	// Computing left pupil
 	std::vector<cv::Point> leftEyePoints = getFeatureDescriptors(INDEX_LEFT_EYE);
 	rectLeftEye = cv::boundingRect(leftEyePoints)
@@ -41,7 +64,9 @@ void faceModel::assign(full_object_detection shape , cv::Mat image) {
 	roiRightEye = inputImage(rectRightEye)
 	preprocessROI(roiRightEye);
 	descriptors.push_back(get_pupil_coordinates(roiRightEye,rectRightEye));
+}
 
+void faceModel::computeNormal() {
 	cv::Point midEye = get_mid_point(cv::Point(shape.part(39).x(), shape.part(39).y()),
 		cv::Point(shape.part(40).x(), shape.part(40).y()));
 

@@ -19,6 +19,9 @@ private:
 		1 : INDEX_RIGHT_EYE_PUPIL
 	*/
 
+	void computePupil();
+	void computeNormal();
+
 public:
 	static const int INDEX_LEFT_EYE = 0;
 	static const int INDEX_LEFT_EYEBROW = 1;
