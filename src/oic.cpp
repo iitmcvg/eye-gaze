@@ -409,8 +409,8 @@ vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
 vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
 vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
 
-draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 5);				
-draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr, 5);
+draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 25);				
+draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr, 25);
                 //cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
 draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
