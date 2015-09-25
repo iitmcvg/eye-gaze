@@ -26,7 +26,6 @@ private:
 	vector<double> normal, gaze;
 
 public:
-
     void assign(full_object_detection shape);
     cv::Point getPupil(int mode);
     std::vector<cv::Point> getDescriptors(int index);
