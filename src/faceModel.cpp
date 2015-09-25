@@ -14,29 +14,50 @@
 #include "util.h"
 #include "constants.h"
 #include "faceDetection.h"
+#include "pupilDetection.h"
 
 // using namespace std;
 // using namespace dlib;
 
-void faceModel::assign(full_object_detection shape) {
+void faceModel::assign(full_object_detection shape , cv::Mat image) {
 	faceShape = shape;
+	image.copyTo(inputImage);
 }
 
 cv::Point faceModel::getPupil(int mode) {
-    assert(mode == MODE_LEFT || mode == MODE_RIGHT);
-    std::vector<cv::Point> ptsEye(0);
-    cv::Mat roiEye = cv::boundingRect();
-    if(mode == MODE_LEFT) {
-        
-    }
-    else {
 
-    }
-}
+	assert(mode == MODE_LEFT || mode == MODE_RIGHT);
+
+	void preprocessROI(cv::Mat& roi_eye) {
+    	GaussianBlur(roi_eye, roi_eye, cv::Size(3,3), 0, 0);
+    	equalizeHist( roi_eye, roi_eye );
+	}
+	
+	if (mode == MODE_LEFT) {
+
+	std::vector<cv::Point> leftEyePoints = getFeatureDescriptors(INDEX_LEFT_EYE);
+	rectLeftEye = cv::boundingRect(leftEyePoints)
+	roiLeftEye = inputImage(rectLeftEye)
+	preprocessROI(roiLeftEye);
+	cv::Point pupilLeft = get_pupil_coordinates(roiLeftEye,rectLeftEye);
+	return pupilLeft;
+	}
+	if (mode == MODE_RIGHT) {
+
+	std::vector<cv::Point> rightEyePoints = getFeatureDescriptors(INDEX_RIGHT_EYE);
+	rectRightEye = cv::boundingRect(rightEyePoints)
+	roiRightEye = inputImage(rectRightEye)
+	preprocessROI(roiRightEye);
+	cv::Point pupilRight = get_pupil_coordinates(roiRightEye,rectRightEye);
+	return pupilRight;
+	}
+ }
+
 
 std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 
-	assert(index == )
+	assert(index == INDEX_LEFT_EYE || index == INDEX_RIGHT_EYE || index == INDEX_LEFT_EYE_BROW || index == INDEX_RIGHT_EYE_BROW 
+		|| index == INDEX_NOSE_UPPER || index == INDEX_NOSE_LOWER || index == INDEX_MOUTH_OUTER || index == INDEX_MOUTH_INNER); 
 
 	if (index == INDEX_LEFT_EYE) {
 
@@ -65,7 +86,7 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 	return leftEyeBrowPoints;
 	}
 
-	else if (index == INDEX_RIGHT_EYE_BROW) {
+	else if (index == INDEX_RIGHT_EYE_BROW || ) {
 
 		std::vector<cv::Point> rightEyeBrowPoints;
 		for (int i=22; i<=26; i++){
@@ -74,7 +95,7 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 	return rightEyeBrowPoints;
 	}
 
-	else if (index == INDEX_NOSE_UPPER) {
+	else if (index == INDEX_NOSE_UPPER || )  {
 
 		std::vector<cv::Point> NoseUpperPoints;
 		for (int i=27; i<=30; i++){
@@ -110,3 +131,5 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 	return MouthInnerPoints;
 	}
 }
+
+
