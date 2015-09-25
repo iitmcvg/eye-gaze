@@ -129,3 +129,20 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 		return MouthInnerPoints;
 	}
 }
+
+void faceModel::setOrigin(cv::Point origin) {
+	this.origin = origin;
+}
+
+void faceModel::setOrigin(int mode) {
+	assert(mode == ORIGIN_IMAGE || mode == ORIGIN_FACE_CENTRE);
+
+	if (mode == ORIGIN_IMAGE) {
+		origin.x = 0;
+		origin.y = 0;
+	}
+	else if (mode == ORIGIN_FACE_CENTRE) {
+		origin.x = shape.part(30).x();
+		origin.y = shape.part(30).y();
+	}
+}

@@ -15,9 +15,11 @@ class Face {
 	static const int INDEX_MOUTH_OUTER = 6;
 	static const int INDEX_MOUTH_INNER = 7;
 
+	static const int ORIGIN_IMAGE = 0;
+	static const int ORIGIN_FACE_CENTRE = 1;
 
 	full_object_detection faceShape;
-	static cv::Point origin = cv::Point(0,0);
+	cv::Point origin = cv::Point(0,0);
 
 	double yaw, pitch, sigma, symm_x, theta, tau;
 	vector<double> normal, gaze;
