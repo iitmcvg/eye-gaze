@@ -50,7 +50,6 @@ std::vector<cv::Point> faceModel::getDescriptors(int index) {
 		|| index == INDEX_NOSE_UPPER || index == INDEX_NOSE_LOWER || index == INDEX_MOUTH_OUTER || index == INDEX_MOUTH_INNER); 
 
 	if (index == INDEX_LEFT_EYE) {
-
 		std::vector<cv::Point> leftEyePoints;
 		for (int i=36; i<=41; i++){
 			leftEyePoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
@@ -59,7 +58,6 @@ std::vector<cv::Point> faceModel::getDescriptors(int index) {
 	}
 
 	else if (index == INDEX_RIGHT_EYE) {
-
 		std::vector<cv::Point> rightEyePoints;
 		for (int i=42; i<=47; i++){
 			rightEyePoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
@@ -68,7 +66,6 @@ std::vector<cv::Point> faceModel::getDescriptors(int index) {
 	}
 
 	else if (index == INDEX_LEFT_EYE_BROW) {
-
 		std::vector<cv::Point> leftEyeBrowPoints;
 		for (int i=17; i<=21; i++){
 			leftEyeBrowPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
@@ -77,7 +74,6 @@ std::vector<cv::Point> faceModel::getDescriptors(int index) {
 	}
 
 	else if (index == INDEX_RIGHT_EYE_BROW) {
-
 		std::vector<cv::Point> rightEyeBrowPoints;
 		for (int i=22; i<=26; i++){
 			rightEyeBrowPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
@@ -86,39 +82,35 @@ std::vector<cv::Point> faceModel::getDescriptors(int index) {
 	}
 
 	else if (index == INDEX_NOSE_UPPER)  {
-
-		std::vector<cv::Point> NoseUpperPoints;
+		std::vector<cv::Point> noseUpperPoints;
 		for (int i=27; i<=30; i++){
-			NoseUpperPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
+			noseUpperPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
 		}
-		return NoseUpperPoints;
+		return noseUpperPoints;
 	}
 
-	else if (index == INDEX_NOSE_LOWER) {
-		
-		std::vector<cv::Point> NoseLowerPoints;
+	else if (index == INDEX_NOSE_LOWER) {		
+		std::vector<cv::Point> noseLowerPoints;
 		for (int i=31; i<=35; i++){
-			NoseLowerPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
+			noseLowerPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
 		}
-		return NoseLowerPoints;
+		return noseLowerPoints;
 	}
 
 	else if (index == INDEX_MOUTH_OUTER) {
-
-		std::vector<cv::Point> MouthOuterPoints;
+		std::vector<cv::Point> mouthOuterPoints;
 		for (int i=48; i<59; i++){
-			MouthOuterPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
+			mouthOuterPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
 		}
-		return MouthOuterPoints;
+		return mouthOuterPoints;
 	}
 
 	else if (index == INDEX_MOUTH_INNER) {
-
-		std::vector<cv::Point> MouthInnerPoints;
+		std::vector<cv::Point> mouthInnerPoints;
 		for (int i=60; i<=67; i++){
-			MouthInnerPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
+			mouthInnerPoints.push_back(cv::Point(faceShape.part(i).x(), faceShape.part(i).y()));
 		}
-		return MouthInnerPoints;
+		return mouthInnerPoints;
 	}
 }
 
