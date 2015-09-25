@@ -3,6 +3,7 @@
 
 class Face {
 
+private:
 	static const int MODE_LEFT = 0;
 	static const int MODE_RIGHT = 1;
 
@@ -24,7 +25,7 @@ class Face {
 	double yaw, pitch, sigma, symm_x, theta, tau;
 	vector<double> normal, gaze;
 
-Public:
+public:
 
     void assign(full_object_detection shape);
     cv::Point getPupil(int mode);
