@@ -133,6 +133,10 @@ cv::Point faceModel::getPupil(int mode) {
 	return descriptors[mode - INDEX_LEFT_EYE_PUPIL];
 }
 
+std::vector<double> getGaze() {
+	return gaze;
+}
+
 std::vector<cv::Point> faceModel::getDescriptors(int index) {
 	assert(index == INDEX_LEFT_EYE || index == INDEX_RIGHT_EYE || index == INDEX_LEFT_EYE_BROW || index == INDEX_RIGHT_EYE_BROW 
 		|| index == INDEX_NOSE_UPPER || index == INDEX_NOSE_LOWER || index == INDEX_MOUTH_OUTER || index == INDEX_MOUTH_INNER); 
