@@ -19,56 +19,56 @@ using namespace std;
 using namespace dlib;
 
 void FaceFeatures::assign(cv::Point c_face_centre, cv::Point c_left_eye, cv::Point c_right_eye, cv::Point c_nose_tip, cv::Point c_mouth) {
-		face_centre = c_face_centre;
-		left_eye = c_left_eye;
-		right_eye = c_right_eye;
-		nose_tip = c_nose_tip;
-		mouth = c_mouth;
+	face_centre = c_face_centre;
+	left_eye = c_left_eye;
+	right_eye = c_right_eye;
+	nose_tip = c_nose_tip;
+	mouth = c_mouth;
 
-		mid_eye.x = (left_eye.x + right_eye.x)/2.0;
-		mid_eye.y = (left_eye.y + right_eye.y)/2.0;
+	mid_eye.x = (left_eye.x + right_eye.x)/2.0;
+	mid_eye.y = (left_eye.y + right_eye.y)/2.0;
 
 		//Find the nose base along the symmetry axis
-		nose_base.x = mouth.x + (mid_eye.x - mouth.x)*Rm;
-		nose_base.y = mouth.y - (mouth.y - mid_eye.y)*Rm;
-	}
+	nose_base.x = mouth.x + (mid_eye.x - mouth.x)*Rm;
+	nose_base.y = mouth.y - (mouth.y - mid_eye.y)*Rm;
+}
 
 void FaceData::assign(FaceFeatures* f) {
-		left_eye_nose_distance = get_distance(f->left_eye, f->nose_base);
-		right_eye_nose_distance = get_distance(f->right_eye, f->nose_base);
-		left_eye_right_eye_distance = get_distance(f->left_eye, f->right_eye);
-		nose_mouth_distance = get_distance(f->nose_base, f->mouth);
+	left_eye_nose_distance = get_distance(f->left_eye, f->nose_base);
+	right_eye_nose_distance = get_distance(f->right_eye, f->nose_base);
+	left_eye_right_eye_distance = get_distance(f->left_eye, f->right_eye);
+	nose_mouth_distance = get_distance(f->nose_base, f->mouth);
 
-		mid_eye_mouth_distance = get_distance(f->mid_eye, f->mouth);
-		nose_base_nose_tip_distance = get_distance(f->nose_tip, f->nose_base);
-	}
+	mid_eye_mouth_distance = get_distance(f->mid_eye, f->mouth);
+	nose_base_nose_tip_distance = get_distance(f->nose_tip, f->nose_base);
+}
 
 void FacePose::assign(FaceFeatures* f, FaceData* d) {
-		symm_x = get_angle_between(f->nose_base, f->mid_eye);
+	symm_x = get_angle_between(f->nose_base, f->mid_eye);
 			//symm angle - angle between the symmetry axis and the 'x' axis 
-		tau = get_angle_between(f->nose_base, f->nose_tip);
+	tau = get_angle_between(f->nose_base, f->nose_tip);
 			//tilt angle - angle between normal in image and 'x' axis
-		theta = (abs(tau - symm_x)) * (PI/180.0);
+	theta = (abs(tau - symm_x)) * (PI/180.0);
 			//theta angle - angle between the symmetry axis and the image normal
-		sigma = find_sigma(d->nose_base_nose_tip_distance, d->mid_eye_mouth_distance, Rn, theta);
+	sigma = find_sigma(d->nose_base_nose_tip_distance, d->mid_eye_mouth_distance, Rn, theta);
 		//std::cout<<"symm : "<<symm_x<<" tau : "<<tau<<" theta : "<<theta<<" sigma : "<<sigma<<" ";
 
-		normal[0] = (sin(sigma))*(cos((360 - tau)*(PI/180.0)));
-		normal[1] = (sin(sigma))*(sin((360 - tau)*(PI/180.0)));
-		normal[2] = -cos(sigma);
+	normal[0] = (sin(sigma))*(cos((360 - tau)*(PI/180.0)));
+	normal[1] = (sin(sigma))*(sin((360 - tau)*(PI/180.0)));
+	normal[2] = -cos(sigma);
 
-		kalman_pitch_pre = pitch;
-		pitch = acos(sqrt((normal[0]*normal[0] + normal[2]*normal[2])/(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2])));
-		if((f->nose_tip.y - f->nose_base.y) < 0) {
-			pitch = -pitch;
-		}
-
-		kalman_yaw_pre = yaw;
-		yaw = acos((abs(normal[2]))/(sqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2])));
-		if((f->nose_tip.x - f->nose_base.x) < 0) {
-			yaw = -yaw;
-		}
+	kalman_pitch_pre = pitch;
+	pitch = acos(sqrt((normal[0]*normal[0] + normal[2]*normal[2])/(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2])));
+	if((f->nose_tip.y - f->nose_base.y) < 0) {
+		pitch = -pitch;
 	}
+
+	kalman_yaw_pre = yaw;
+	yaw = acos((abs(normal[2]))/(sqrt(normal[0]*normal[0] + normal[1]*normal[1] + normal[2]*normal[2])));
+	if((f->nose_tip.x - f->nose_base.x) < 0) {
+		yaw = -yaw;
+	}
+}
 
 void draw_facial_normal(cv::Mat& img, dlib::full_object_detection shape, std::vector<double> normal, double mag) {
 
