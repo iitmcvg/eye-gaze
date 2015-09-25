@@ -4,6 +4,25 @@
 class Face {
 
 private:
+	double Rn = 0.5;
+	double Rm = 0.5;
+
+	full_object_detection faceShape;
+	cv::Point origin = cv::Point(0,0);
+
+	double yaw, pitch, sigma, symm_x, theta, tau;
+	vector<double> normal, gaze;
+
+	vector<cv::Point> descriptors;
+	/*
+		0 : INDEX_LEFT_EYE_PUPIL
+		1 : INDEX_RIGHT_EYE_PUPIL
+	*/
+
+	void computePupil();
+	void computeNormal();
+
+public:
 	static const int INDEX_LEFT_EYE = 0;
 	static const int INDEX_LEFT_EYEBROW = 1;
 	static const int INDEX_RIGHT_EYE = 2;
@@ -18,19 +37,6 @@ private:
 	static const int ORIGIN_IMAGE = 0;
 	static const int ORIGIN_FACE_CENTRE = 1;
 
-	full_object_detection faceShape;
-	cv::Point origin = cv::Point(0,0);
-
-	double yaw, pitch, sigma, symm_x, theta, tau;
-	vector<double> normal, gaze;
-
-	vector<cv::Point> descriptors;
-	/*
-		0 : INDEX_LEFT_EYE_PUPIL
-		1 : INDEX_RIGHT_EYE_PUPIL
-	*/
-
-public:
     void assign(full_object_detection shape);
     cv::Point getPupil(int mode);
     std::vector<cv::Point> getDescriptors(int index);
@@ -38,7 +44,6 @@ public:
     std::vector<double> getNormal();
     void setOrigin(cv::Point origin);
     void setOrigin(int mode);
-
 };
 
 #endif
