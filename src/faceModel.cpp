@@ -40,7 +40,8 @@ double find_sigma(int ln, int lf, double Rn, double theta) {
 	return sigma;
 }
 
-void faceModel::assign(full_object_detection shape , cv::Mat image) {
+void faceModel::assign(full_object_detection shape , cv::Mat image, int mode = MODE_GAZE_VA) {
+	assert(mode == MODE_GAZE_VA || mode == MODE_GAZE_QE);
 	faceShape = shape;
 	image.copyTo(inputImage);
 
@@ -48,6 +49,7 @@ void faceModel::assign(full_object_detection shape , cv::Mat image) {
 
 	computePupil();
 	computeNormal();
+	computeGaze(mode);
 }
 
 void faceModel::computePupil() {
@@ -99,6 +101,10 @@ void faceModel::computeNormal() {
 	if((noseTip.x - noseBase.x) < 0) {
 		yaw = -yaw;
 	}
+}
+
+void computeGaze(int mode) {
+
 }
 
 void faceModel::setOrigin(cv::Point origin) {

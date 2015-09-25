@@ -21,8 +21,12 @@ private:
 
 	void computePupil();
 	void computeNormal();
+	void computeGaze(int mode);
 
 public:
+	static const int MODE_GAZE_VA = 0;
+	static const int MODE_GAZE_QE = 1;
+
 	static const int INDEX_LEFT_EYE = 0;
 	static const int INDEX_LEFT_EYEBROW = 1;
 	static const int INDEX_RIGHT_EYE = 2;
