@@ -104,7 +104,7 @@ void faceModel::computeNormal() {
 }
 
 void computeGaze(int mode) {
-
+	compute_eye_gaze (FacePose* face_pose, dlib::full_object_detection shape, cv::Rect rect, cv::Point pupil, double mag_CP, double mag_LR, double mag_CR, double mag_CM, double theta, int mode, std::vector<double>& vec_CP) {
 }
 
 void faceModel::setOrigin(cv::Point origin) {
