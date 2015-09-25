@@ -86,7 +86,7 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 	return leftEyeBrowPoints;
 	}
 
-	else if (index == INDEX_RIGHT_EYE_BROW || ) {
+	else if (index == INDEX_RIGHT_EYE_BROW) {
 
 		std::vector<cv::Point> rightEyeBrowPoints;
 		for (int i=22; i<=26; i++){
@@ -95,7 +95,7 @@ std::vector<cv::Point> faceModel::getFeatureDescriptors(int index) {
 	return rightEyeBrowPoints;
 	}
 
-	else if (index == INDEX_NOSE_UPPER || )  {
+	else if (index == INDEX_NOSE_UPPER)  {
 
 		std::vector<cv::Point> NoseUpperPoints;
 		for (int i=27; i<=30; i++){
