@@ -938,9 +938,9 @@ display(void)
   glPushMatrix();
   glTranslatef(0.0, 0.2, 0.0);
   glScalef(0.3, 0.3, 0.3);
-  glRotatef(360*acos(g_normal[0]), 1, 0, 0);
-  glRotatef(360*acos(g_normal[1]), 0, 1, 0);
-  glRotatef(360*acos(g_normal[2]), 0, 0, 1);
+  glRotatef(180*acos(g_normal[0])/(3.14), 1, 0, 0);
+  glRotatef(180*acos(g_normal[1])/(3.14), 0, 1, 0);
+  glRotatef(180*acos(g_normal[2])/(3.14), 0, 0, 1);
   glScalef(1.0, 2.0, 1.0);
   glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *) cubeXform);
 
