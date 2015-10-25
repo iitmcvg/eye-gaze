@@ -24,8 +24,69 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
 using namespace dlib;
 using namespace std;
+
+///////////////////////Defining keypress'
+#define DOWN_KEY XK_Down
+#define UP_KEY XK_Up
+#define RIGHT_KEY XK_Right
+#define LEFT_KEY XK_Left
+
+XKeyEvent createKeyEvent(Display *display, Window &win, Window &winRoot, bool press, int keycode, int modifiers)
+{
+    XKeyEvent event;
+
+    event.display     = display;
+    event.window      = win;
+    event.root        = winRoot;
+    event.subwindow   = None;
+    event.time        = CurrentTime;
+    event.x           = 1;
+    event.y           = 1;
+    event.x_root      = 1;
+    event.y_root      = 1;
+    event.same_screen = True;
+    event.keycode     = XKeysymToKeycode(display, keycode);
+    event.state       = modifiers;
+
+    if(press)
+        event.type = KeyPress;
+    else
+        event.type = KeyRelease;
+
+    return event;
+}
+
+void simulate_key_press(int key_code) {
+// Obtain the X11 display.
+    Display *display = XOpenDisplay(0);    
+
+// Get the root window for the current display.
+    Window winRoot = XDefaultRootWindow(display);
+
+// Find the window which has the current keyboard focus.
+    Window winFocus;
+    int    revert;
+    XGetInputFocus(display, &winFocus, &revert);
+
+// Send a fake key press event to the window.
+    XKeyEvent event = createKeyEvent(display, winFocus, winRoot, true, key_code, 0);
+    XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+
+// Send a fake key release event to the window.
+    event = createKeyEvent(display, winFocus, winRoot, false, key_code, 0);
+    XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+
+// Done.
+    XCloseDisplay(display);
+}
+
 
 float R[16];
 
@@ -482,7 +543,30 @@ void* startOCV(void* argv) {
 
         vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
         vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
-        vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
+        vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;	
+
+///////////////////////////////////////////////////////////////////////////////////Checking for direction of vector
+//If it doesnt work well just check with face_normal vector
+//Also change the threshold value used to check vector direction        
+
+        if(vec_cp_kalman_avg[0]>0) {
+                        std::cout<<endl<<"Right ";
+                        simulate_key_press(RIGHT_KEY);
+                    }
+        else if(vec_cp_kalman_avg[0]<0) {
+                        std::cout<<endl<<"Left ";
+                        simulate_key_press(LEFT_KEY);
+                    }
+
+        if(vec_cp_kalman_avg[1]<0) {
+                        std::cout<<endl<<"Up ";
+                        simulate_key_press(UP_KEY);
+                    }
+        else if(vec_cp_kalman_avg[1]>0) {
+                        std::cout<<endl<<"Down ";
+                        simulate_key_press(DOWN_KEY);
+                    }
+	
 
         g_normal = vec_cp_kalman_l;
         //constructRot(vec_ce_kalman_l[0], vec_ce_kalman_l[1], vec_ce_kalman_l[2]);
