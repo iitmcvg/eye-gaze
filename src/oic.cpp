@@ -611,216 +611,216 @@ static float cube_vertexes[6][4][4] =
     {-1.0, 1.0, 1.0, 1.0},
     {-1.0, 1.0, -1.0, 1.0}},
 
-  {
-    {1.0, 1.0, 1.0, 1.0},
-    {1.0, -1.0, 1.0, 1.0},
-    {1.0, -1.0, -1.0, 1.0},
-    {1.0, 1.0, -1.0, 1.0}},
+    {
+        {1.0, 1.0, 1.0, 1.0},
+        {1.0, -1.0, 1.0, 1.0},
+        {1.0, -1.0, -1.0, 1.0},
+        {1.0, 1.0, -1.0, 1.0}},
 
-  {
-    {-1.0, -1.0, -1.0, 1.0},
-    {1.0, -1.0, -1.0, 1.0},
-    {1.0, -1.0, 1.0, 1.0},
-    {-1.0, -1.0, 1.0, 1.0}},
+        {
+            {-1.0, -1.0, -1.0, 1.0},
+            {1.0, -1.0, -1.0, 1.0},
+            {1.0, -1.0, 1.0, 1.0},
+            {-1.0, -1.0, 1.0, 1.0}},
 
-  {
-    {1.0, 1.0, 1.0, 1.0},
-    {1.0, 1.0, -1.0, 1.0},
-    {-1.0, 1.0, -1.0, 1.0},
-    {-1.0, 1.0, 1.0, 1.0}},
+            {
+                {1.0, 1.0, 1.0, 1.0},
+                {1.0, 1.0, -1.0, 1.0},
+                {-1.0, 1.0, -1.0, 1.0},
+                {-1.0, 1.0, 1.0, 1.0}},
 
-  {
-    {-1.0, -1.0, -1.0, 1.0},
-    {-1.0, 1.0, -1.0, 1.0},
-    {1.0, 1.0, -1.0, 1.0},
-    {1.0, -1.0, -1.0, 1.0}},
+                {
+                    {-1.0, -1.0, -1.0, 1.0},
+                    {-1.0, 1.0, -1.0, 1.0},
+                    {1.0, 1.0, -1.0, 1.0},
+                    {1.0, -1.0, -1.0, 1.0}},
 
-  {
-    {1.0, 1.0, 1.0, 1.0},
-    {-1.0, 1.0, 1.0, 1.0},
-    {-1.0, -1.0, 1.0, 1.0},
-    {1.0, -1.0, 1.0, 1.0}}
-};
+                    {
+                        {1.0, 1.0, 1.0, 1.0},
+                        {-1.0, 1.0, 1.0, 1.0},
+                        {-1.0, -1.0, 1.0, 1.0},
+                        {1.0, -1.0, 1.0, 1.0}}
+                    };
 
-static float cube_normals[6][4] =
-{
-  {-1.0, 0.0, 0.0, 0.0},
-  {1.0, 0.0, 0.0, 0.0},
-  {0.0, -1.0, 0.0, 0.0},
-  {0.0, 1.0, 0.0, 0.0},
-  {0.0, 0.0, -1.0, 0.0},
-  {0.0, 0.0, 1.0, 0.0}
-};
+                    static float cube_normals[6][4] =
+                    {
+                      {-1.0, 0.0, 0.0, 0.0},
+                      {1.0, 0.0, 0.0, 0.0},
+                      {0.0, -1.0, 0.0, 0.0},
+                      {0.0, 1.0, 0.0, 0.0},
+                      {0.0, 0.0, -1.0, 0.0},
+                      {0.0, 0.0, 1.0, 0.0}
+                  };
 
-static void
-usage(void)
-{
-  printf("\n");
-  printf("usage: scube [options]\n");
-  printf("\n");
-  printf("    display a spinning cube and its shadow\n");
-  printf("\n");
-  printf("  Options:\n");
-  printf("    -geometry  window size and location\n");
-  printf("    -c         toggle color index mode\n");
-  printf("    -l         toggle lighting\n");
-  printf("    -f         toggle fog\n");
-  printf("    -db        toggle double buffering\n");
-  printf("    -logo      toggle sgi logo for the shadow pattern\n");
-  printf("    -quads     toggle use of GL_QUADS to draw the checkerboard\n");
-  printf("\n");
+                  static void
+                  usage(void)
+                  {
+                      printf("\n");
+                      printf("usage: scube [options]\n");
+                      printf("\n");
+                      printf("    display a spinning cube and its shadow\n");
+                      printf("\n");
+                      printf("  Options:\n");
+                      printf("    -geometry  window size and location\n");
+                      printf("    -c         toggle color index mode\n");
+                      printf("    -l         toggle lighting\n");
+                      printf("    -f         toggle fog\n");
+                      printf("    -db        toggle double buffering\n");
+                      printf("    -logo      toggle sgi logo for the shadow pattern\n");
+                      printf("    -quads     toggle use of GL_QUADS to draw the checkerboard\n");
+                      printf("\n");
 #ifndef EXIT_FAILURE    /* should be defined by ANSI C
                            <stdlib.h> */
 #define EXIT_FAILURE 1
 #endif
-  exit(EXIT_FAILURE);
-}
+                      exit(EXIT_FAILURE);
+                  }
 
-void
-buildColormap(void)
-{
-  if (useRGB) {
-    return;
-  } else {
-    int mapSize = 1 << glutGet(GLUT_WINDOW_BUFFER_SIZE);
-    int rampSize = mapSize / 8;
-    int entry;
-    int i;
+                  void
+                  buildColormap(void)
+                  {
+                      if (useRGB) {
+                        return;
+                    } else {
+                        int mapSize = 1 << glutGet(GLUT_WINDOW_BUFFER_SIZE);
+                        int rampSize = mapSize / 8;
+                        int entry;
+                        int i;
 
-    for (entry = 0; entry < mapSize; ++entry) {
-      int hue = entry / rampSize;
-      GLfloat val = (entry % rampSize) * (1.0 / (rampSize - 1));
-      GLfloat red, green, blue;
+                        for (entry = 0; entry < mapSize; ++entry) {
+                          int hue = entry / rampSize;
+                          GLfloat val = (entry % rampSize) * (1.0 / (rampSize - 1));
+                          GLfloat red, green, blue;
 
-      red = (hue == 0 || hue == 1 || hue == 5 || hue == 6) ? val : 0;
-      green = (hue == 0 || hue == 2 || hue == 4 || hue == 6) ? val : 0;
-      blue = (hue == 0 || hue == 3 || hue == 4 || hue == 5) ? val : 0;
+                          red = (hue == 0 || hue == 1 || hue == 5 || hue == 6) ? val : 0;
+                          green = (hue == 0 || hue == 2 || hue == 4 || hue == 6) ? val : 0;
+                          blue = (hue == 0 || hue == 3 || hue == 4 || hue == 5) ? val : 0;
 
-      glutSetColor(entry, red, green, blue);
-    }
+                          glutSetColor(entry, red, green, blue);
+                      }
 
-    for (i = 0; i < 8; ++i) {
-      materialColor[i][0] = i * rampSize + 0.2 * (rampSize - 1);
-      materialColor[i][1] = i * rampSize + 0.8 * (rampSize - 1);
-      materialColor[i][2] = i * rampSize + 1.0 * (rampSize - 1);
-      materialColor[i][3] = 0.0;
-    }
+                      for (i = 0; i < 8; ++i) {
+                          materialColor[i][0] = i * rampSize + 0.2 * (rampSize - 1);
+                          materialColor[i][1] = i * rampSize + 0.8 * (rampSize - 1);
+                          materialColor[i][2] = i * rampSize + 1.0 * (rampSize - 1);
+                          materialColor[i][3] = 0.0;
+                      }
 
-    fogIndex[0] = -0.2 * (rampSize - 1);
-  }
-}
+                      fogIndex[0] = -0.2 * (rampSize - 1);
+                  }
+              }
 
-static void
-setColor(int c)
-{
-  if (useLighting) {
-    if (useRGB) {
-      glMaterialfv(GL_FRONT_AND_BACK,
-        GL_AMBIENT_AND_DIFFUSE, &materialColor[c][0]);
-    } else {
-      glMaterialfv(GL_FRONT_AND_BACK,
-        GL_COLOR_INDEXES, &materialColor[c][0]);
-    }
-  } else {
-    if (useRGB) {
-      glColor4fv(&materialColor[c][0]);
-    } else {
-      glIndexf(materialColor[c][1]);
-    }
-  }
-}
-
-static void
-drawCube(int color)
-{
-  int i;
-
-  setColor(color);
-
-  for (i = 0; i < 6; ++i) {
-    glNormal3fv(&cube_normals[i][0]);
-    glBegin(GL_POLYGON);
-    glVertex4fv(&cube_vertexes[i][0][0]);
-    glVertex4fv(&cube_vertexes[i][1][0]);
-    glVertex4fv(&cube_vertexes[i][2][0]);
-    glVertex4fv(&cube_vertexes[i][3][0]);
-    glEnd();
-  }
-}
-
-static void
-drawCheck(int w, int h, int evenColor, int oddColor)
-{
-  static int initialized = 0;
-  static int usedLighting = 0;
-  static GLuint checklist = 0;
-
-  if (!initialized || (usedLighting != useLighting)) {
-    static float square_normal[4] =
-    {0.0, 0.0, 1.0, 0.0};
-    static float square[4][4];
-    int i, j;
-
-    if (!checklist) {
-      checklist = glGenLists(1);
-    }
-    glNewList(checklist, GL_COMPILE_AND_EXECUTE);
-
-    if (useQuads) {
-      glNormal3fv(square_normal);
-      glBegin(GL_QUADS);
-    }
-    for (j = 0; j < h; ++j) {
-      for (i = 0; i < w; ++i) {
-        square[0][0] = -1.0 + 2.0 / w * i;
-        square[0][1] = -1.0 + 2.0 / h * (j + 1);
-        square[0][2] = 0.0;
-        square[0][3] = 1.0;
-
-        square[1][0] = -1.0 + 2.0 / w * i;
-        square[1][1] = -1.0 + 2.0 / h * j;
-        square[1][2] = 0.0;
-        square[1][3] = 1.0;
-
-        square[2][0] = -1.0 + 2.0 / w * (i + 1);
-        square[2][1] = -1.0 + 2.0 / h * j;
-        square[2][2] = 0.0;
-        square[2][3] = 1.0;
-
-        square[3][0] = -1.0 + 2.0 / w * (i + 1);
-        square[3][1] = -1.0 + 2.0 / h * (j + 1);
-        square[3][2] = 0.0;
-        square[3][3] = 1.0;
-
-        if (i & 1 ^ j & 1) {
-          setColor(oddColor);
-        } else {
-          setColor(evenColor);
-        }
-
-        if (!useQuads) {
-          glBegin(GL_POLYGON);
-        }
-        glVertex4fv(&square[0][0]);
-        glVertex4fv(&square[1][0]);
-        glVertex4fv(&square[2][0]);
-        glVertex4fv(&square[3][0]);
-        if (!useQuads) {
-          glEnd();
-        }
+              static void
+              setColor(int c)
+              {
+                  if (useLighting) {
+                    if (useRGB) {
+                      glMaterialfv(GL_FRONT_AND_BACK,
+                        GL_AMBIENT_AND_DIFFUSE, &materialColor[c][0]);
+                  } else {
+                      glMaterialfv(GL_FRONT_AND_BACK,
+                        GL_COLOR_INDEXES, &materialColor[c][0]);
+                  }
+              } else {
+                if (useRGB) {
+                  glColor4fv(&materialColor[c][0]);
+              } else {
+                  glIndexf(materialColor[c][1]);
+              }
+          }
       }
+
+      static void
+      drawCube(int color)
+      {
+          int i;
+
+          setColor(color);
+
+          for (i = 0; i < 6; ++i) {
+            glNormal3fv(&cube_normals[i][0]);
+            glBegin(GL_POLYGON);
+            glVertex4fv(&cube_vertexes[i][0][0]);
+            glVertex4fv(&cube_vertexes[i][1][0]);
+            glVertex4fv(&cube_vertexes[i][2][0]);
+            glVertex4fv(&cube_vertexes[i][3][0]);
+            glEnd();
+        }
     }
 
-    if (useQuads) {
-      glEnd();
-    }
-    glEndList();
+    static void
+    drawCheck(int w, int h, int evenColor, int oddColor)
+    {
+      static int initialized = 0;
+      static int usedLighting = 0;
+      static GLuint checklist = 0;
 
-    initialized = 1;
-    usedLighting = useLighting;
-  } else {
-    glCallList(checklist);
+      if (!initialized || (usedLighting != useLighting)) {
+        static float square_normal[4] =
+        {0.0, 0.0, 1.0, 0.0};
+        static float square[4][4];
+        int i, j;
+
+        if (!checklist) {
+          checklist = glGenLists(1);
+      }
+      glNewList(checklist, GL_COMPILE_AND_EXECUTE);
+
+      if (useQuads) {
+          glNormal3fv(square_normal);
+          glBegin(GL_QUADS);
+      }
+      for (j = 0; j < h; ++j) {
+          for (i = 0; i < w; ++i) {
+            square[0][0] = -1.0 + 2.0 / w * i;
+            square[0][1] = -1.0 + 2.0 / h * (j + 1);
+            square[0][2] = 0.0;
+            square[0][3] = 1.0;
+
+            square[1][0] = -1.0 + 2.0 / w * i;
+            square[1][1] = -1.0 + 2.0 / h * j;
+            square[1][2] = 0.0;
+            square[1][3] = 1.0;
+
+            square[2][0] = -1.0 + 2.0 / w * (i + 1);
+            square[2][1] = -1.0 + 2.0 / h * j;
+            square[2][2] = 0.0;
+            square[2][3] = 1.0;
+
+            square[3][0] = -1.0 + 2.0 / w * (i + 1);
+            square[3][1] = -1.0 + 2.0 / h * (j + 1);
+            square[3][2] = 0.0;
+            square[3][3] = 1.0;
+
+            if (i & 1 ^ j & 1) {
+              setColor(oddColor);
+          } else {
+              setColor(evenColor);
+          }
+
+          if (!useQuads) {
+              glBegin(GL_POLYGON);
+          }
+          glVertex4fv(&square[0][0]);
+          glVertex4fv(&square[1][0]);
+          glVertex4fv(&square[2][0]);
+          glVertex4fv(&square[3][0]);
+          if (!useQuads) {
+              glEnd();
+          }
+      }
   }
+
+  if (useQuads) {
+      glEnd();
+  }
+  glEndList();
+
+  initialized = 1;
+  usedLighting = useLighting;
+} else {
+    glCallList(checklist);
+}
 }
 
 static void
@@ -830,9 +830,9 @@ myShadowMatrix(float ground[4], float light[4])
   float shadowMat[4][4];
 
   dot = ground[0] * light[0] +
-    ground[1] * light[1] +
-    ground[2] * light[2] +
-    ground[3] * light[3];
+  ground[1] * light[1] +
+  ground[2] * light[2] +
+  ground[3] * light[3];
 
   shadowMat[0][0] = dot - light[0] * ground[0];
   shadowMat[1][0] = 0.0 - light[0] * ground[1];
@@ -868,8 +868,8 @@ idle(void)
   tick++;
   if (tick >= 120) {
     tick = 0;
-  }
-  glutPostRedisplay();
+}
+glutPostRedisplay();
 }
 
 /* ARGSUSED1 */
@@ -880,37 +880,37 @@ keyboard(unsigned char ch, int x, int y)
   case 27:             /* escape */
     exit(0);
     break;
-  case 'L':
-  case 'l':
+    case 'L':
+    case 'l':
     useLighting = !useLighting;
     useLighting ? glEnable(GL_LIGHTING) :
-      glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
     glutPostRedisplay();
     break;
-  case 'F':
-  case 'f':
+    case 'F':
+    case 'f':
     useFog = !useFog;
     useFog ? glEnable(GL_FOG) : glDisable(GL_FOG);
     glutPostRedisplay();
     break;
-  case '1':
+    case '1':
     glFogf(GL_FOG_MODE, GL_LINEAR);
     glutPostRedisplay();
     break;
-  case '2':
+    case '2':
     glFogf(GL_FOG_MODE, GL_EXP);
     glutPostRedisplay();
     break;
-  case '3':
+    case '3':
     glFogf(GL_FOG_MODE, GL_EXP2);
     glutPostRedisplay();
     break;
-  case ' ':
+    case ' ':
     if (!moving) {
       idle();
       glutPostRedisplay();
-    }
   }
+}
 }
 
 void
@@ -938,10 +938,12 @@ display(void)
   glPushMatrix();
   glTranslatef(0.0, 0.2, 0.0);
   glScalef(0.3, 0.3, 0.3);
-  glRotatef(180*acos(g_normal[0])/(3.14), 1, 0, 0);
-  glRotatef(180*acos(g_normal[1])/(3.14), 0, 1, 0);
+  /*glRotatef(180*acos(g_normal[1])/(3.14), 1, 0, 0);
+  glRotatef(180*acos(-g_normal[0])/(3.14), 0, 1, 0);
   glRotatef(180*acos(g_normal[2])/(3.14), 0, 0, 1);
-  glScalef(1.0, 2.0, 1.0);
+  */
+  glRotatef(180*fabs(acos(-g_normal[2]))/3.14, g_normal[0], g_normal[1], 0.0);
+  glScalef(1.0, 1.0, 1.0);
   glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *) cubeXform);
 
   drawCube(RED);        /* draw cube */
@@ -950,42 +952,42 @@ display(void)
   glDepthMask(GL_FALSE);
   if (useRGB) {
     glEnable(GL_BLEND);
-  } else {
+} else {
     glEnable(GL_POLYGON_STIPPLE);
-  }
-  if (useFog) {
+}
+if (useFog) {
     glDisable(GL_FOG);
-  }
-  glPushMatrix();
-  myShadowMatrix(groundPlane, lightPos);
-  glTranslatef(0.0, 0.0, 2.0);
-  glMultMatrixf((const GLfloat *) cubeXform);
+}
+glPushMatrix();
+myShadowMatrix(groundPlane, lightPos);
+glTranslatef(0.0, 0.0, 2.0);
+glMultMatrixf((const GLfloat *) cubeXform);
 
   drawCube(BLACK);      /* draw ground shadow */
-  glPopMatrix();
+glPopMatrix();
 
-  glPushMatrix();
-  myShadowMatrix(backPlane, lightPos);
-  glTranslatef(0.0, 0.0, 2.0);
-  glMultMatrixf((const GLfloat *) cubeXform);
+glPushMatrix();
+myShadowMatrix(backPlane, lightPos);
+glTranslatef(0.0, 0.0, 2.0);
+glMultMatrixf((const GLfloat *) cubeXform);
 
   drawCube(BLACK);      /* draw back shadow */
-  glPopMatrix();
+glPopMatrix();
 
-  glDepthMask(GL_TRUE);
-  if (useRGB) {
+glDepthMask(GL_TRUE);
+if (useRGB) {
     glDisable(GL_BLEND);
-  } else {
+} else {
     glDisable(GL_POLYGON_STIPPLE);
-  }
-  if (useFog) {
+}
+if (useFog) {
     glEnable(GL_FOG);
-  }
-  if (useDB) {
+}
+if (useDB) {
     glutSwapBuffers();
-  } else {
+} else {
     glFlush();
-  }
+}
 }
 
 void
@@ -999,28 +1001,28 @@ void
 menu_select(int mode)
 {
   switch (mode) {
-  case 1:
-    moving = 1;
-    glutIdleFunc(idle);
-    break;
-  case 2:
-    moving = 0;
-    glutIdleFunc(NULL);
-    break;
-  case 3:
-    useFog = !useFog;
-    useFog ? glEnable(GL_FOG) : glDisable(GL_FOG);
-    glutPostRedisplay();
-    break;
-  case 4:
-    useLighting = !useLighting;
-    useLighting ? glEnable(GL_LIGHTING) :
+      case 1:
+      moving = 1;
+      glutIdleFunc(idle);
+      break;
+      case 2:
+      moving = 0;
+      glutIdleFunc(NULL);
+      break;
+      case 3:
+      useFog = !useFog;
+      useFog ? glEnable(GL_FOG) : glDisable(GL_FOG);
+      glutPostRedisplay();
+      break;
+      case 4:
+      useLighting = !useLighting;
+      useLighting ? glEnable(GL_LIGHTING) :
       glDisable(GL_LIGHTING);
-    glutPostRedisplay();
-    break;
-  case 5:
-    exit(0);
-    break;
+      glutPostRedisplay();
+      break;
+      case 5:
+      exit(0);
+      break;
   }
 }
 
@@ -1030,10 +1032,10 @@ visible(int state)
   if (state == GLUT_VISIBLE) {
     if (moving)
       glutIdleFunc(idle);
-  } else {
+} else {
     if (moving)
       glutIdleFunc(NULL);
-  }
+}
 }
 
 
