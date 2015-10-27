@@ -20,8 +20,85 @@
 #include "kmeansUtils.h"
 #include "gazeComputation.h"
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
 using namespace dlib;
 using namespace std;
+
+
+///////////////////////Defining keypress'
+#define DOWN_KEY XK_Down
+#define UP_KEY XK_Up
+#define RIGHT_KEY XK_Right
+#define LEFT_KEY XK_Left
+
+XKeyEvent createKeyEvent(Display *display, Window &win, Window &winRoot, bool press, int keycode, int modifiers)
+{
+    XKeyEvent event;
+
+    event.display     = display;
+    event.window      = win;
+    event.root        = winRoot;
+    event.subwindow   = None;
+    event.time        = CurrentTime;
+    event.x           = 1;
+    event.y           = 1;
+    event.x_root      = 1;
+    event.y_root      = 1;
+    event.same_screen = True;
+    event.keycode     = XKeysymToKeycode(display, keycode);
+    event.state       = modifiers;
+
+    if(press)
+        event.type = KeyPress;
+    else
+        event.type = KeyRelease;
+
+    return event;
+}
+
+void mouse_move(int x, int y)
+{
+    Display *displayMain = XOpenDisplay(NULL);
+
+    if(displayMain == NULL)
+    {
+        std::cout<<"Can't read display";
+        exit(EXIT_FAILURE);
+    }
+
+    XWarpPointer(displayMain, None, None, 0, 0, 0, 0, x, y);
+
+    XCloseDisplay(displayMain);
+}
+
+
+void simulate_key_press(int key_code) {
+// Obtain the X11 display.
+    Display *display = XOpenDisplay(0);    
+
+// Get the root window for the current display.
+    Window winRoot = XDefaultRootWindow(display);
+
+// Find the window which has the current keyboard focus.
+    Window winFocus;
+    int    revert;
+    XGetInputFocus(display, &winFocus, &revert);
+
+// Send a fake key press event to the window.
+    XKeyEvent event = createKeyEvent(display, winFocus, winRoot, true, key_code, 0);
+    XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+
+// Send a fake key release event to the window.
+    event = createKeyEvent(display, winFocus, winRoot, false, key_code, 0);
+    XSendEvent(event.display, event.window, True, KeyPressMask, (XEvent *)&event);
+
+// Done.
+    XCloseDisplay(display);
+}
+
 
 void preprocessROI(cv::Mat& roi_eye) {
     GaussianBlur(roi_eye, roi_eye, cv::Size(3,3), 0, 0);
@@ -57,6 +134,9 @@ int main(int argc, char** argv) {
         std::vector<float> vec_kmeans_data_l;
 
         double Cf_left, Cf_right, mag_nor = 12.0, alpha = 30.0;
+        double Rd = atoi(argv[2]);
+        double sc_w = 640, sc_h = 480;
+
 
         //TODO : Initialize all vectors to [0, 0, 0];
         vec_ce_pos_l[0] = 0;vec_ce_pos_l[1] = 0;vec_ce_pos_l[2] = 0;
@@ -407,13 +487,36 @@ make_unit_vector(vec_cp_kalman_r, vec_cp_kalman_r);
 
 vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
 vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
-vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;		
+vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;	
 
-draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 5);				
-draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr, 5);
+double threshS = 0.3;
+double proj_x = (-vec_ce_kalman_l[0]*Rd)/(vec_ce_kalman_l[2]);
+double proj_y = (-vec_ce_kalman_l[1]*Rd)/(vec_ce_kalman_l[2]);
+//mouse_move(proj_x, proj_y);
+if(vec_ce_kalman_l[0]>threshS) {
+    std::cout<<"Right ";
+    simulate_key_press(RIGHT_KEY);
+}
+else if(vec_ce_kalman_l[0]<-threshS) {
+    std::cout<<"Left ";
+    simulate_key_press(LEFT_KEY);
+}
+
+if(vec_ce_kalman_l[1]<threshS) {
+    std::cout<<"Up ";
+    simulate_key_press(UP_KEY);
+}
+else if(vec_ce_kalman_l[1]>threshS) {
+    std::cout<<"Down ";
+    simulate_key_press(DOWN_KEY);
+}
+
+
+    draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 5);				
+    draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr, 5);
                 //cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
 
-draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
+    draw_facial_normal(frame_clr, shape, vec_ce_kalman_l, 5*mag_nor);
 }
 }
 win.clear_overlay();
