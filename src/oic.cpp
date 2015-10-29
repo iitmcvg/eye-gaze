@@ -106,6 +106,7 @@ void preprocessROI(cv::Mat& roi_eye) {
 }
 
 int main(int argc, char** argv) {
+    int ic=0;
     try	{
 
         cv::VideoCapture cap(0);
@@ -174,6 +175,11 @@ int main(int argc, char** argv) {
 
         while(!win.is_closed()) {
             cap >> frame_clr;
+            ic = ic%3;
+            if(ic!=0) {
+                ++ic;
+                continue;
+            }
             cv::flip(frame_clr, frame_clr, 1);
             cv::cvtColor(frame_clr, frame, CV_BGR2GRAY);
 
@@ -489,29 +495,65 @@ vec_cp_kalman_avg[0] = (vec_cp_kalman_l[0] + vec_cp_kalman_r[0])/2.0;
 vec_cp_kalman_avg[1] = (vec_cp_kalman_l[1] + vec_cp_kalman_r[1])/2.0;
 vec_cp_kalman_avg[2] = (vec_cp_kalman_l[2] + vec_cp_kalman_r[2])/2.0;	
 
-double threshS = 0.3;
+//0.00225585 0.022898 -0.999735 ~ centre
+//0.460663 -0.117901 -0.879709  //  0.574457 0.0296768 -0.817997 ~ right
+//-0.328629 -0.0979596 -0.939365 ~ left
+//0.0187966 -0.246363 -0.968995 ~ up
+//0.00923803 0.212447 -0.977129 ~ down
+ 
+double thresh_r = 0.1;
+double thresh_l = -0.1;
+double thresh_u = -0.1;
+double thresh_d = 0.1;
+
 double proj_x = (-vec_ce_kalman_l[0]*Rd)/(vec_ce_kalman_l[2]);
 double proj_y = (-vec_ce_kalman_l[1]*Rd)/(vec_ce_kalman_l[2]);
 //mouse_move(proj_x, proj_y);
-if(vec_ce_kalman_l[0]>threshS) {
+if(vec_ce_kalman_l[0]>thresh_r) {
     std::cout<<"Right ";
     simulate_key_press(RIGHT_KEY);
 }
-else if(vec_ce_kalman_l[0]<-threshS) {
+else if(vec_ce_kalman_l[0]<thresh_l) {
     std::cout<<"Left ";
     simulate_key_press(LEFT_KEY);
 }
 
-if(vec_ce_kalman_l[1]<threshS) {
+if(vec_ce_kalman_l[1]<thresh_u) {
     std::cout<<"Up ";
     simulate_key_press(UP_KEY);
 }
-else if(vec_ce_kalman_l[1]>threshS) {
+else if(vec_ce_kalman_l[1]>thresh_d) {
     std::cout<<"Down ";
     simulate_key_press(DOWN_KEY);
 }
 
+/*
+double thresh_r = 0.5;
+double thresh_l = -0.5;
+double thresh_u = -0.2;
+double thresh_d = 0.2;
 
+double proj_x = (-vec_ce_kalman_l[0]*Rd)/(vec_ce_kalman_l[2]);
+double proj_y = (-vec_ce_kalman_l[1]*Rd)/(vec_ce_kalman_l[2]);
+//mouse_move(proj_x, proj_y);
+if(vec_cp_kalman_avg[0]>thresh_r) {
+    std::cout<<"Right ";
+    simulate_key_press(RIGHT_KEY);
+}
+else if(vec_cp_kalman_avg[0]<thresh_l) {
+    std::cout<<"Left ";
+    simulate_key_press(LEFT_KEY);
+}
+
+if(vec_cp_kalman_avg[1]<thresh_u) {
+    std::cout<<"Up ";
+    simulate_key_press(UP_KEY);
+}
+else if(vec_cp_kalman_avg[1]>thresh_d) {
+    std::cout<<"Down ";
+    simulate_key_press(DOWN_KEY);
+}
+*/
     draw_eye_gaze(pt_p_kalman_l, vec_cp_kalman_avg, rect1, frame_clr, 5);				
     draw_eye_gaze(pt_p_kalman_r, vec_cp_kalman_avg, rect2, frame_clr, 5);
                 //cv::line(frame_clr, cv::Point(pt_p_kalman_r.x + rect2.x, pt_p_kalman_r.y + rect2.y), cv::Point(pt_p_kalman_r.x + rect2.x + vec_ep_pos_r[0], pt_p_kalman_r.y + rect2.y + vec_ep_pos_r[1]), cv::Scalar(255, 255, 255), 1);
