@@ -9,12 +9,15 @@ We have implemented an Eye Gaze tracking system ( currently in Beta version ) us
 
 * Gaze direction
 
-To have a look into how we did it, just clone the repository. Then, 
+To have a look into how we did it, just clone the repository and checkout **v1.0**.
 
 ```
 $ cd eye-gaze
+$ git checkout tags/v1.0
 $ make
 ```
+Or you can download **eye-gaze v1.0** directly from releases.
+
 For a trial,
 
 ```
