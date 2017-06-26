@@ -25,20 +25,20 @@ $ cd eye-gaze
 $ ./bin/oic
 ```
 
-##Dependencies
+## Dependencies
 
 * OpenCV ( used 2.4.9 )
 
-##Sample outputs
+## Sample outputs
 
 <img src = "https://raw.githubusercontent.com/iitmcvg/eye-gaze/master/res/demo/sample_output_1.png" width = "40%" />
 <br><br>
 <img src = "https://raw.githubusercontent.com/iitmcvg/eye-gaze/master/res/demo/sample_output_2.png" width = "40%" />
 <br><br>
 
-##References
+## References
 
-###**Head-pose estimation**
+### **Head-pose estimation**
 
 1.Michael Sapienza and Kenneth P. Camilleri - “Fasthpe: A recipe for quick head pose estimation”
 
@@ -52,7 +52,7 @@ $ ./bin/oic
 
 6.Oliver Jesorsky, Klaus J. Kirchberg, and Robert W. Frischholz - “Robust Face Detection”
 
-###**Pupil localisation**
+### **Pupil localisation**
 
 1.Fabian Timm and Erhardt Barth  - “ACCURATE EYE CENTRE LOCALISATION BY MEANS OF GRADIENTS”
 
